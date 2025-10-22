@@ -1,18 +1,16 @@
-    name: CI/CD with Docker Compose
+name: CI/CD Docker Compose
 
-    on: [push]
+on: [push]
 
-    jobs:
-      build-and-test:
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v4
-          - uses: docker/setup-compose-action@v2 # Sets up Docker Compose
-            with:
-              version: 'v2' # Or 'latest', or a specific version
-          - name: Start services
-            run: |
-              docker compose up -d
-          - name: Clean up
-            if: always() # Ensure cleanup even if tests fail
-            run: docker compose down --volumes
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Run docker compose
+        uses: hoverkraft-tech/compose-action@3846bcd61da338e9eaaf83e7ed0234a12b099b72 # v2.4.1
+        with:
+          compose-file: "./docker-compose.yml"
+          down-flags: "--volumes"
