@@ -14,3 +14,6 @@ jobs:
         with:
           compose-file: "./docker-compose.yml"
           down-flags: "--volumes"
+
+      - name: Check running containers
+        run: docker ps
