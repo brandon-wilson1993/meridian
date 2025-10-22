@@ -16,4 +16,4 @@ jobs:
           down-flags: "--volumes"
 
       - name: Check running containers
-        run: docker ps
+        run: docker logs flyway
