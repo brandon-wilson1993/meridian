@@ -1,4 +1,4 @@
-package com.meridian.api.platform;
+package com.meridian.api.authors;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -8,16 +8,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class PlatformModelAssembler
-        implements RepresentationModelAssembler<Platform, EntityModel<Platform>> {
+public class AuthorsModelAssembler
+        implements RepresentationModelAssembler<Authors, EntityModel<Authors>> {
 
     @Override
-    public EntityModel<Platform> toModel(Platform platform) {
+    public EntityModel<Authors> toModel(Authors author) {
 
         return EntityModel.of(
-                platform,
-                linkTo(methodOn(PlatformController.class).getPlatformById(platform.getId()))
+                author,
+                linkTo(methodOn(AuthorsController.class).getAuthorById(author.getId()))
                         .withSelfRel(),
-                linkTo(methodOn(PlatformController.class).getAllPlatforms()).withRel("platforms"));
+                linkTo(methodOn(AuthorsController.class).getAllAuthors()).withRel("authors"));
     }
 }

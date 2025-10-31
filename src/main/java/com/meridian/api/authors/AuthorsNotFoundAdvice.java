@@ -1,4 +1,4 @@
-package com.meridian.api.platform;
+package com.meridian.api.authors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class PlatformNotFoundAdvice {
+public class AuthorsNotFoundAdvice {
 
-    @ExceptionHandler(PlatformNotFoundException.class)
+    @ExceptionHandler(AuthorsNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String platformNotFoundHandler(PlatformNotFoundException exception) {
+    public String authorNotFoundHandler(AuthorsNotFoundException exception) {
 
         return exception.getMessage();
     }

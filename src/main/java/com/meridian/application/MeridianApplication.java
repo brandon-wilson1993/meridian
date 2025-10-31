@@ -7,9 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.meridian.api.platform"})
-@EntityScan(basePackages = {"com.meridian.api.platform"})
-@EnableJpaRepositories(basePackages = {"com.meridian.api.platform"})
+@ComponentScan(basePackages = {"com.meridian.api.authors"})
+@EntityScan(basePackages = {"com.meridian.api.authors"})
+@EnableJpaRepositories(basePackages = {"com.meridian.api.authors"})
 public class MeridianApplication {
 
     public static void main(String... args) {
