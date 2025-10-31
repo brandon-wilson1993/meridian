@@ -25,7 +25,7 @@ public class AuthorsController {
 
     // TODO: only allowed in dev environments
     @PostMapping("/authors")
-    public ResponseEntity<?> createAuthor(Authors newAuthor) {
+    public ResponseEntity<?> createAuthor(@RequestBody Authors newAuthor) {
 
         EntityModel<Authors> entityModel =
                 authorsModelAssembler.toModel(authorsRepository.save(newAuthor));
