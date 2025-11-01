@@ -15,15 +15,13 @@ import java.util.stream.Collectors;
 @RestController
 public class AuthorController {
 
-    private final AuthorRepository authorsRepository;
     private final AuthorModelAssembler authorsModelAssembler;
 
     @Autowired
     private AuthorService authorService;
 
-    public AuthorController(AuthorRepository authorsRepository, AuthorModelAssembler assembler) {
+    public AuthorController(AuthorModelAssembler assembler) {
 
-        this.authorsRepository = authorsRepository;
         this.authorsModelAssembler = assembler;
     }
 
@@ -40,9 +38,9 @@ public class AuthorController {
 
     // TODO: only allowed in dev environments
     @DeleteMapping("/authors/{id}")
-    public ResponseEntity<?> deleteAuthor(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteAuthorById(@PathVariable("id") Long id) {
 
-        authorsRepository.deleteById(id);
+        authorService.deleteAuthorById(id);
 
         return ResponseEntity.noContent().build();
     }
@@ -51,7 +49,7 @@ public class AuthorController {
     public CollectionModel<EntityModel<Author>> getAllAuthors() {
 
         List<EntityModel<Author>> platforms =
-                authorsRepository.findAll().stream()
+                authorService.getAllAuthors().stream()
                         .map(authorsModelAssembler::toModel)
                         .collect(Collectors.toList());
 
@@ -73,19 +71,7 @@ public class AuthorController {
     public ResponseEntity<?> updateAuthor(
             @RequestBody Author updatedAuthor, @PathVariable("id") Long id) {
 
-        Author updateAuthor =
-                authorsRepository
-                        .findById(id)
-                        .map(
-                                platform -> {
-                                    platform.setFirstName(updatedAuthor.getFirstName());
-                                    platform.setLastName(updatedAuthor.getLastName());
-                                    return authorsRepository.save(platform);
-                                })
-                        .orElseGet(
-                                () -> {
-                                    return authorsRepository.save(updatedAuthor);
-                                });
+        Author updateAuthor = authorService.updateAuthor(updatedAuthor, id);
 
         EntityModel<Author> entityModel = authorsModelAssembler.toModel(updateAuthor);
 
