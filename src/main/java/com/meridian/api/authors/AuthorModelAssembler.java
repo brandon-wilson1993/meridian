@@ -8,16 +8,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class AuthorsModelAssembler
-        implements RepresentationModelAssembler<Authors, EntityModel<Authors>> {
+public class AuthorModelAssembler
+        implements RepresentationModelAssembler<Author, EntityModel<Author>> {
 
     @Override
-    public EntityModel<Authors> toModel(Authors author) {
+    public EntityModel<Author> toModel(Author author) {
 
         return EntityModel.of(
                 author,
-                linkTo(methodOn(AuthorsController.class).getAuthorById(author.getId()))
+                linkTo(methodOn(AuthorController.class).getAuthorById(author.getId()))
                         .withSelfRel(),
-                linkTo(methodOn(AuthorsController.class).getAllAuthors()).withRel("authors"));
+                linkTo(methodOn(AuthorController.class).getAllAuthors()).withRel("authors"));
     }
 }

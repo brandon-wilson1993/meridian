@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import java.util.Objects;
 
 @Entity
-public class Authors {
+public class Author {
 
     @GeneratedValue @Id
     private Long id;
@@ -23,6 +23,13 @@ public class Authors {
 
     // seriesid
 
+
+    public Author(Long id, String firstName, String lastName) {
+
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -49,9 +56,9 @@ public class Authors {
 
         if (this == o)
             return true;
-        if (!(o instanceof Authors))
+        if (!(o instanceof Author))
             return false;
-        Authors platform = (Authors) o;
+        Author platform = (Author) o;
         return Objects.equals(this.id, platform.id) && Objects.equals(this.firstName, platform.firstName)
                 && Objects.equals(this.lastName, platform.lastName);
     }

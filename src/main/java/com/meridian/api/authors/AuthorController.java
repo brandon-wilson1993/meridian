@@ -2,6 +2,7 @@ package com.meridian.api.authors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -12,12 +13,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-public class AuthorsController {
+public class AuthorController {
 
-    private final AuthorsRepository authorsRepository;
-    private final AuthorsModelAssembler authorsModelAssembler;
+    private final AuthorRepository authorsRepository;
+    private final AuthorModelAssembler authorsModelAssembler;
 
-    public AuthorsController(AuthorsRepository authorsRepository, AuthorsModelAssembler assembler) {
+    @Autowired
+    private AuthorService authorService;
+
+    public AuthorController(AuthorRepository authorsRepository, AuthorModelAssembler assembler) {
 
         this.authorsRepository = authorsRepository;
         this.authorsModelAssembler = assembler;
@@ -25,10 +29,10 @@ public class AuthorsController {
 
     // TODO: only allowed in dev environments
     @PostMapping("/authors")
-    public ResponseEntity<?> createAuthor(@RequestBody Authors newAuthor) {
+    public ResponseEntity<?> createAuthor(@RequestBody Author newAuthor) {
 
-        EntityModel<Authors> entityModel =
-                authorsModelAssembler.toModel(authorsRepository.save(newAuthor));
+        EntityModel<Author> entityModel =
+                authorsModelAssembler.toModel(authorService.createAuthor(newAuthor));
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
@@ -44,35 +48,32 @@ public class AuthorsController {
     }
 
     @GetMapping("/authors")
-    public CollectionModel<EntityModel<Authors>> getAllAuthors() {
+    public CollectionModel<EntityModel<Author>> getAllAuthors() {
 
-        List<EntityModel<Authors>> platforms =
+        List<EntityModel<Author>> platforms =
                 authorsRepository.findAll().stream()
                         .map(authorsModelAssembler::toModel)
                         .collect(Collectors.toList());
 
         return CollectionModel.of(
                 platforms,
-                linkTo(methodOn(AuthorsController.class).getAllAuthors()).withSelfRel());
+                linkTo(methodOn(AuthorController.class).getAllAuthors()).withSelfRel());
     }
 
     @GetMapping("/authors/{id}")
-    public EntityModel<Authors> getAuthorById(@PathVariable("id") Long id) {
+    public EntityModel<Author> getAuthorById(@PathVariable("id") Long id) {
 
-        Authors platform =
-                authorsRepository
-                        .findById(id)
-                        .orElseThrow(() -> new AuthorsNotFoundException(id));
+        Author author = authorService.getAuthorById(id);
 
-        return authorsModelAssembler.toModel(platform);
+        return authorsModelAssembler.toModel(author);
     }
 
     // TODO: only allowed in dev environments
     @PutMapping("/authors/{id}")
     public ResponseEntity<?> updateAuthor(
-            @RequestBody Authors updatedAuthor, @PathVariable("id") Long id) {
+            @RequestBody Author updatedAuthor, @PathVariable("id") Long id) {
 
-        Authors updateAuthor =
+        Author updateAuthor =
                 authorsRepository
                         .findById(id)
                         .map(
@@ -86,7 +87,7 @@ public class AuthorsController {
                                     return authorsRepository.save(updatedAuthor);
                                 });
 
-        EntityModel<Authors> entityModel = authorsModelAssembler.toModel(updateAuthor);
+        EntityModel<Author> entityModel = authorsModelAssembler.toModel(updateAuthor);
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
