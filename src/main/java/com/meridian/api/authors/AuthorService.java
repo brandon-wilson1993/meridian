@@ -8,7 +8,8 @@ import java.util.List;
 @Service
 public class AuthorService {
 
-    @Autowired private AuthorRepository authorsRepository;
+    @Autowired
+    private AuthorRepository authorsRepository;
 
     public Author createAuthor(Author author) {
 

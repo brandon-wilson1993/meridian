@@ -17,17 +17,17 @@ public class AuthorController {
 
     private final AuthorModelAssembler authorsModelAssembler;
 
-    @Autowired
     private AuthorService authorService;
 
     public AuthorController(AuthorModelAssembler assembler) {
 
         this.authorsModelAssembler = assembler;
+        authorService = new AuthorService();
     }
 
     // TODO: only allowed in dev environments
     @PostMapping("/authors")
-    public ResponseEntity<?> createAuthor(@RequestBody Author newAuthor) {
+    public ResponseEntity<EntityModel<Author>> createAuthor(@RequestBody Author newAuthor) {
 
         EntityModel<Author> entityModel =
                 authorsModelAssembler.toModel(authorService.createAuthor(newAuthor));
@@ -38,7 +38,7 @@ public class AuthorController {
 
     // TODO: only allowed in dev environments
     @DeleteMapping("/authors/{id}")
-    public ResponseEntity<?> deleteAuthorById(@PathVariable("id") Long id) {
+    public ResponseEntity<EntityModel<Author>> deleteAuthorById(@PathVariable("id") Long id) {
 
         authorService.deleteAuthorById(id);
 
@@ -51,7 +51,7 @@ public class AuthorController {
         List<EntityModel<Author>> platforms =
                 authorService.getAllAuthors().stream()
                         .map(authorsModelAssembler::toModel)
-                        .collect(Collectors.toList());
+                        .toList();
 
         return CollectionModel.of(
                 platforms,
@@ -68,7 +68,7 @@ public class AuthorController {
 
     // TODO: only allowed in dev environments
     @PutMapping("/authors/{id}")
-    public ResponseEntity<?> updateAuthor(
+    public ResponseEntity<ResponseEntity<Author>> updateAuthor(
             @RequestBody Author updatedAuthor, @PathVariable("id") Long id) {
 
         Author updateAuthor = authorService.updateAuthor(updatedAuthor, id);
