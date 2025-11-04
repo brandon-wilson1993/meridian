@@ -1,16 +1,19 @@
 package com.meridian.api.authors;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
-public class Authors {
+public class Author {
 
-    @GeneratedValue @Id
+    @SequenceGenerator(
+            name = "idx_seq",
+            sequenceName = "idx_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idx_seq")
+    @Id
     private Long id;
 
     @Column(name = "first_name")
@@ -23,6 +26,14 @@ public class Authors {
 
     // seriesid
 
+    public Author() {}
+
+    public Author(Long id, String firstName, String lastName) {
+
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -49,9 +60,9 @@ public class Authors {
 
         if (this == o)
             return true;
-        if (!(o instanceof Authors))
+        if (!(o instanceof Author))
             return false;
-        Authors platform = (Authors) o;
+        Author platform = (Author) o;
         return Objects.equals(this.id, platform.id) && Objects.equals(this.firstName, platform.firstName)
                 && Objects.equals(this.lastName, platform.lastName);
     }

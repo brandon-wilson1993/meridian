@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class AuthorsNotFoundAdvice {
+public class AuthorNotFoundAdvice {
 
-    @ExceptionHandler(AuthorsNotFoundException.class)
+    @ExceptionHandler(AuthorNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String authorNotFoundHandler(AuthorsNotFoundException exception) {
+    public String authorNotFoundHandler(AuthorNotFoundException exception) {
 
         return exception.getMessage();
     }
