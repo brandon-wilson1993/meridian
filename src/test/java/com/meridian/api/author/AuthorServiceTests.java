@@ -1,4 +1,4 @@
-package com.meridian.api.authors;
+package com.meridian.api.author;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

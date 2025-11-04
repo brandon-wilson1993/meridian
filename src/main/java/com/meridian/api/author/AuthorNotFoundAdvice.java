@@ -1,4 +1,4 @@
-package com.meridian.api.authors;
+package com.meridian.api.author;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

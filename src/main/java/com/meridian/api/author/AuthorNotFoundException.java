@@ -1,4 +1,4 @@
-package com.meridian.api.authors;
+package com.meridian.api.author;
 
 public class AuthorNotFoundException extends RuntimeException {
 
