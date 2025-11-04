@@ -5,7 +5,7 @@ services:
     image: postgres:16-alpine
     container_name: postgres
     environment:
-      POSTGRES_DB: gaming
+      POSTGRES_DB: meridian
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
@@ -22,7 +22,7 @@ services:
   flyway:
     image: flyway/flyway
     container_name: flyway
-    command: -url=jdbc:postgresql://postgres:5432/gaming -schemas=public -user=postgres -password=password migrate
+    command: -url=jdbc:postgresql://postgres:5432/meridian -schemas=public -user=postgres -password=password migrate
     volumes:
       - ./.docker/flyway/:/flyway/sql
     depends_on:

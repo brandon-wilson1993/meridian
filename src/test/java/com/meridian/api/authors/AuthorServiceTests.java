@@ -18,8 +18,10 @@ import java.util.Optional;
 public class AuthorServiceTests {
 
     private static Author author;
+
     @Mock
     private AuthorRepository authorRepository;
+
     @InjectMocks
     private AuthorService authorService;
 

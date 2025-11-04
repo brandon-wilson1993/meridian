@@ -1,16 +1,19 @@
 package com.meridian.api.authors;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
 public class Author {
 
-    @GeneratedValue @Id
+    @SequenceGenerator(
+            name = "idx_seq",
+            sequenceName = "idx_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idx_seq")
+    @Id
     private Long id;
 
     @Column(name = "first_name")
@@ -23,6 +26,7 @@ public class Author {
 
     // seriesid
 
+    public Author() {}
 
     public Author(Long id, String firstName, String lastName) {
 

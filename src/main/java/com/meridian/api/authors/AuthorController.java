@@ -17,12 +17,12 @@ public class AuthorController {
 
     private final AuthorModelAssembler authorsModelAssembler;
 
+    @Autowired
     private AuthorService authorService;
 
     public AuthorController(AuthorModelAssembler assembler) {
 
         this.authorsModelAssembler = assembler;
-        authorService = new AuthorService();
     }
 
     // TODO: only allowed in dev environments
@@ -68,7 +68,7 @@ public class AuthorController {
 
     // TODO: only allowed in dev environments
     @PutMapping("/authors/{id}")
-    public ResponseEntity<ResponseEntity<Author>> updateAuthor(
+    public ResponseEntity<EntityModel<Author>> updateAuthor(
             @RequestBody Author updatedAuthor, @PathVariable("id") Long id) {
 
         Author updateAuthor = authorService.updateAuthor(updatedAuthor, id);
