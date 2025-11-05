@@ -2,8 +2,13 @@ package com.meridian.api.author;
 
 public class AuthorNotFoundException extends RuntimeException {
 
-    public AuthorNotFoundException(Long id) {
+    private String message;
 
-        super("Could not find Platform " + id);
+    public AuthorNotFoundException() {}
+
+    public AuthorNotFoundException(String message) {
+
+        super(message);
+        this.message = message;
     }
 }

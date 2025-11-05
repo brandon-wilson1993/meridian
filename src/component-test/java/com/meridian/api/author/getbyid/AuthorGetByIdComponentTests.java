@@ -21,4 +21,14 @@ public class AuthorGetByIdComponentTests extends BaseTest {
                 .body("firstName", equalTo("Karen"))
                 .body("lastName", equalTo("Travis"));
     }
+
+    @Test
+    void getByIdReturns404StatusCodeWhenAuthorNotFound() {
+
+        Response response = RestAssured.given().log().ifValidationFails()
+                .get("/authors/9999");
+
+        response.prettyPrint();
+        response.then().statusCode(404);
+    }
 }

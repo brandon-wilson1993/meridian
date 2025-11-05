@@ -2,10 +2,13 @@ package com.meridian.api.author;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import com.meridian.api.error.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +20,7 @@ public class AuthorController {
     private final AuthorModelAssembler authorsModelAssembler;
 
     @Autowired
-    private AuthorService authorService;
+    private AuthorServiceImpl authorService;
 
     public AuthorController(AuthorModelAssembler assembler) {
 
@@ -76,5 +79,11 @@ public class AuthorController {
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
+    }
+
+    @ExceptionHandler(AuthorNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleAuthorNotFoundException(AuthorNotFoundException ex) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 }
