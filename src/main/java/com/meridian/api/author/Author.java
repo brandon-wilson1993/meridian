@@ -61,7 +61,7 @@ public class Author {
         if (this == o)
             return true;
         if (!(o instanceof Author))
-            return false;  
+            return false;
         Author platform = (Author) o;
         return Objects.equals(this.id, platform.id) && Objects.equals(this.firstName, platform.firstName)
                 && Objects.equals(this.lastName, platform.lastName);
