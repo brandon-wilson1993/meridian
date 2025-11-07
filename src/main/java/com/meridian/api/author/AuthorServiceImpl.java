@@ -38,11 +38,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     public Author updateAuthor(Author updatedAuthor, Long id) {
 
-        if(!authorsRepository.existsById(id)) {
-
-            throw new AuthorNotFoundException("Author with id " + id + " not found");
-        }
-
         return authorsRepository
                 .findById(id)
                 .map(
@@ -51,9 +46,7 @@ public class AuthorServiceImpl implements AuthorService {
                             platform.setLastName(updatedAuthor.getLastName());
                             return authorsRepository.save(platform);
                         })
-                .orElseGet(
-                        () -> {
-                            return authorsRepository.save(updatedAuthor);
-                        });
+                .orElseThrow(
+                        () -> new AuthorNotFoundException("Author with id " + id + " not found"));
     }
 }
