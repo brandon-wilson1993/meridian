@@ -5,16 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+//@AllArgsConstructor
+//@NoArgsConstructor
 public class ErrorResponse {
 
     private int statusCode;
     private String message;
 
-    public ErrorResponse(String message) {
+    public ErrorResponse(int statusCode, String message) {
 
         super();
         this.message = message;
+        this.statusCode = statusCode;
     }
 }

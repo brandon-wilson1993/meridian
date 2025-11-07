@@ -22,8 +22,7 @@ public class AuthorServiceTests {
     @Mock
     private AuthorRepository authorRepository;
 
-    @InjectMocks
-    private AuthorServiceImpl authorService;
+    @InjectMocks private AuthorService authorService = new AuthorServiceImpl();
 
     @BeforeAll
     static void beforeAll() {
