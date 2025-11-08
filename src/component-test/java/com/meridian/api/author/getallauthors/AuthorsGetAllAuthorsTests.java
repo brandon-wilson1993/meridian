@@ -17,7 +17,7 @@ public class AuthorsGetAllAuthorsTests extends BaseTest {
 
         response.then().statusCode(200).and()
                 .body("_embedded.authorList.find() { it.id == 1 }.lastName", equalTo("Travis"))
-                .body("_embedded.authorList.find() { it.id == 2 }.lastName", equalTo("Seusss"))
+                .body("_embedded.authorList.find() { it.id == 2 }.lastName", equalTo("Seuss"))
                 .body("_embedded.authorList.find() { it.id == 3 }.lastName", equalTo("Rowling"));
     }
 }
