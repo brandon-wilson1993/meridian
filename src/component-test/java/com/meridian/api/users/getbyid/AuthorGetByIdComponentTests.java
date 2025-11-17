@@ -1,4 +1,4 @@
-package com.meridian.api.author.getbyid;
+package com.meridian.api.users.getbyid;
 
 import com.meridian.api.base.BaseTest;
 import io.restassured.RestAssured;

@@ -1,4 +1,4 @@
-package com.meridian.api.author;
+package com.meridian.api.users;
 
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
-public class Author {
+public class Users {
 
     @SequenceGenerator(
             name = "idx_seq",
@@ -28,7 +28,7 @@ public class Author {
 
     // seriesid
 
-    public Author(Long id, String firstName, String lastName) {
+    public Users(Long id, String firstName, String lastName) {
 
         this.id = id;
         this.firstName = firstName;
@@ -60,9 +60,9 @@ public class Author {
 
         if (this == o)
             return true;
-        if (!(o instanceof Author))
+        if (!(o instanceof Users))
             return false;
-        Author platform = (Author) o;
+        Users platform = (Users) o;
         return Objects.equals(this.id, platform.id) && Objects.equals(this.firstName, platform.firstName)
                 && Objects.equals(this.lastName, platform.lastName);
     }
@@ -74,6 +74,6 @@ public class Author {
 
     @Override
     public String toString() {
-        return "Authors{ id=" + this.id + ", first_name='" + this.firstName + '\'' + ", last_name='" + this.lastName + '\'' + '}';
+        return "Users{ id=" + this.id + ", first_name='" + this.firstName + '\'' + ", last_name='" + this.lastName + '\'' + '}';
     }
 }
