@@ -3,7 +3,7 @@ name: CI/CD Docker Compose
 on: [push]
 
 jobs:
-  build:
+  build-and-unit-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,6 +18,10 @@ jobs:
       - name: Build with Maven
         run: mvn -B package
 
+  integration-testing-ephemeral-env:
+    runs-on: ubuntu-latest
+    
+    steps:
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@3846bcd61da338e9eaaf83e7ed0234a12b099b72 # v2.4.1
         with:
