@@ -5,15 +5,15 @@ import org.springframework.hateoas.EntityModel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AuthorModelAssemblerTests {
+public class UsersModelAssemblerTests {
 
     @Test
     void authorModel_returnsCorrectly() {
 
-        Users author = new Users(123L, "Assembler", "Test");
+        Users user = new Users(123L, "Assembler", "Test");
 
-        UsersModelAssembler authorModelAssembler = new UsersModelAssembler();
-        EntityModel<Users> model = authorModelAssembler.toModel(author);
+        UsersModelAssembler userModelAssembler = new UsersModelAssembler();
+        EntityModel<Users> model = userModelAssembler.toModel(user);
 
         assertEquals(123L, model.getContent().getId());
         assertEquals("Assembler", model.getContent().getFirstName());

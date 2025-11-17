@@ -26,7 +26,7 @@ public class UsersController {
 
     // TODO: only allowed in dev environments
     @PostMapping("/authors")
-    public ResponseEntity<EntityModel<Users>> createAuthor(@RequestBody Users newAuthor) {
+    public ResponseEntity<EntityModel<Users>> createUser(@RequestBody Users newAuthor) {
 
         EntityModel<Users> entityModel =
                 usersModelAssembler.toModel(usersService.createUser(newAuthor));
@@ -37,7 +37,7 @@ public class UsersController {
 
     // TODO: only allowed in dev environments
     @DeleteMapping("/authors/{id}")
-    public ResponseEntity<EntityModel<Users>> deleteAuthorById(@PathVariable("id") Long id) {
+    public ResponseEntity<EntityModel<Users>> deleteUserById(@PathVariable("id") Long id) {
 
         usersService.deleteUserById(id);
 
@@ -45,7 +45,7 @@ public class UsersController {
     }
 
     @GetMapping("/authors")
-    public CollectionModel<EntityModel<Users>> getAllAuthors() {
+    public CollectionModel<EntityModel<Users>> getAllUsers() {
 
         List<EntityModel<Users>> platforms =
                 usersService.getAllUsers().stream()
@@ -54,11 +54,11 @@ public class UsersController {
 
         return CollectionModel.of(
                 platforms,
-                linkTo(methodOn(UsersController.class).getAllAuthors()).withSelfRel());
+                linkTo(methodOn(UsersController.class).getAllUsers()).withSelfRel());
     }
 
     @GetMapping("/authors/{id}")
-    public EntityModel<Users> getAuthorById(@PathVariable("id") Long id) {
+    public EntityModel<Users> getUserById(@PathVariable("id") Long id) {
 
         Users author = usersService.getUserById(id);
 
@@ -67,7 +67,7 @@ public class UsersController {
 
     // TODO: only allowed in dev environments
     @PutMapping("/authors/{id}")
-    public ResponseEntity<EntityModel<Users>> updateAuthor(
+    public ResponseEntity<EntityModel<Users>> updateUser(
             @RequestBody Users updatedAuthor, @PathVariable("id") Long id) {
 
         Users updateAuthor = usersService.updateUser(updatedAuthor, id);

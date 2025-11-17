@@ -74,6 +74,6 @@ public class Users {
 
     @Override
     public String toString() {
-        return "Authors{ id=" + this.id + ", first_name='" + this.firstName + '\'' + ", last_name='" + this.lastName + '\'' + '}';
+        return "Users{ id=" + this.id + ", first_name='" + this.firstName + '\'' + ", last_name='" + this.lastName + '\'' + '}';
     }
 }

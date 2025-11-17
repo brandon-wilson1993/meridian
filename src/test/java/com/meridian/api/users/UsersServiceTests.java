@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthorServiceTests {
+public class UsersServiceTests {
 
     private static Users author;
 
     @Mock
-    private AuthorRepository authorRepository;
+    private UsersRepository usersRepository;
 
-    @InjectMocks private AuthorService authorService = new AuthorServiceImpl();
+    @InjectMocks private UsersService usersService = new UsersServiceImpl();
 
     @BeforeAll
     static void beforeAll() {
@@ -33,35 +33,35 @@ public class AuthorServiceTests {
     @Test
     void createAuthor_shouldCreate_whenAuthorIsValid() {
 
-        when(authorRepository.save(author)).thenReturn(author);
+        when(usersRepository.save(author)).thenReturn(author);
 
-        Users result = authorService.createAuthor(author);
+        Users result = usersService.createUser(author);
 
         assertEquals(123L, result.getId());
         assertEquals("Testing", result.getFirstName());
         assertEquals("Name", result.getLastName());
 
-        verify(authorRepository).save(author);
+        verify(usersRepository).save(author);
     }
 
     @Test
     void deleteAuthorById_shouldDelete_whenIdExists() {
 
-        when(authorRepository.existsById(123L)).thenReturn(true);
+        when(usersRepository.existsById(123L)).thenReturn(true);
 
-        authorService.deleteAuthorById(123L);
+        usersService.deleteUserById(123L);
 
-        verify(authorRepository).deleteById(123L);
+        verify(usersRepository).deleteById(123L);
     }
 
     @Test
     void deleteAuthorById_shouldNotDelete_whenIdDoesNotExists() {
 
-        when(authorRepository.existsById(12L)).thenReturn(false);
+        when(usersRepository.existsById(12L)).thenReturn(false);
 
-        assertThrows(AuthorNotFoundException.class, () -> authorService.deleteAuthorById(12L));
+        assertThrows(UsersNotFoundException.class, () -> usersService.deleteUserById(12L));
 
-        verify(authorRepository, never()).deleteById(123L);
+        verify(usersRepository, never()).deleteById(123L);
     }
 
     @Test
@@ -72,32 +72,32 @@ public class AuthorServiceTests {
 
         List<Users> authors = Arrays.asList(author, author1, author2);
 
-        when(authorRepository.findAll()).thenReturn(authors);
+        when(usersRepository.findAll()).thenReturn(authors);
 
-        List<Users> result = authorService.getAllAuthors();
+        List<Users> result = usersService.getAllUsers();
 
         assertArrayEquals(authors.toArray(), result.toArray());
-        verify(authorRepository).findAll();
+        verify(usersRepository).findAll();
     }
 
     @Test
     void getAuthorById_shouldReturn_whenIdExists() {
 
-        when(authorRepository.findById(123L)).thenReturn(Optional.of(author));
+        when(usersRepository.findById(123L)).thenReturn(Optional.of(author));
 
-        Users result = authorService.getAuthorById(123L);
+        Users result = usersService.getUserById(123L);
 
         assertEquals(123L, result.getId());
-        verify(authorRepository).findById(123L);
+        verify(usersRepository).findById(123L);
     }
 
     @Test
     void getAuthorById_shouldNotReturn_whenIdDoesNotExists() {
 
-        when(authorRepository.findById(12L)).thenReturn(Optional.empty());
+        when(usersRepository.findById(12L)).thenReturn(Optional.empty());
 
-        assertThrows(AuthorNotFoundException.class, () -> authorService.getAuthorById(12L));
-        verify(authorRepository).findById(12L);
+        assertThrows(UsersNotFoundException.class, () -> usersService.getUserById(12L));
+        verify(usersRepository).findById(12L);
     }
 
     @Test
@@ -105,16 +105,16 @@ public class AuthorServiceTests {
 
         Users update = new Users(123L, "Update", "Name");
 
-        when(authorRepository.findById(123L)).thenReturn(Optional.of(author));
-        when(authorRepository.save(any(Users.class))).thenReturn(update);
+        when(usersRepository.findById(123L)).thenReturn(Optional.of(author));
+        when(usersRepository.save(any(Users.class))).thenReturn(update);
 
-        Users result = authorService.updateAuthor(update, 123L);
+        Users result = usersService.updateUser(update, 123L);
 
         assertEquals(123L, result.getId());
         assertEquals("Update", result.getFirstName());
         assertEquals("Name", result.getLastName());
 
-        verify(authorRepository).save(update);
+        verify(usersRepository).save(update);
     }
 
     @Test
@@ -122,8 +122,8 @@ public class AuthorServiceTests {
 
         Users update = new Users(12L, "Update", "Name");
 
-        assertThrows(AuthorNotFoundException.class, () -> authorService.updateAuthor(update, 12L));
+        assertThrows(UsersNotFoundException.class, () -> usersService.updateUser(update, 12L));
 
-        verify(authorRepository).findById(12L);
+        verify(usersRepository).findById(12L);
     }
 }

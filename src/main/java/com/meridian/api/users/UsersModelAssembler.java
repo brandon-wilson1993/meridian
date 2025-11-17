@@ -16,8 +16,8 @@ public class UsersModelAssembler
 
         return EntityModel.of(
                 author,
-                linkTo(methodOn(UsersController.class).getAuthorById(author.getId()))
+                linkTo(methodOn(UsersController.class).getUserById(author.getId()))
                         .withSelfRel(),
-                linkTo(methodOn(UsersController.class).getAllAuthors()).withRel("authors"));
+                linkTo(methodOn(UsersController.class).getAllUsers()).withRel("authors"));
     }
 }
