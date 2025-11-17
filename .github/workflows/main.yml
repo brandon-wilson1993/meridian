@@ -16,7 +16,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build with Maven
-        run: mvn -B package
+        run: mvn -B package -Dskip.integration.tests=false
 
   integration-testing-ephemeral-env:
     runs-on: ubuntu-latest
