@@ -1,10 +1,12 @@
-package com.meridian.api.authors;
+package com.meridian.api.author;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 @Entity
+@NoArgsConstructor
 public class Author {
 
     @SequenceGenerator(
@@ -25,8 +27,6 @@ public class Author {
     // bookid
 
     // seriesid
-
-    public Author() {}
 
     public Author(Long id, String firstName, String lastName) {
 
@@ -74,6 +74,6 @@ public class Author {
 
     @Override
     public String toString() {
-        return "Authors{" + "id=" + this.id + ", first_name='" + this.firstName + '\'' + ", lsat_name='" + this.lastName + '\'' + '}';
+        return "Authors{ id=" + this.id + ", first_name='" + this.firstName + '\'' + ", last_name='" + this.lastName + '\'' + '}';
     }
 }

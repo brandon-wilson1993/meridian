@@ -1,4 +1,4 @@
-package com.meridian.api.authors;
+package com.meridian.api.author;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;

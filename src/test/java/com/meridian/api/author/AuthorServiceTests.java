@@ -1,4 +1,4 @@
-package com.meridian.api.authors;
+package com.meridian.api.author;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,8 +22,7 @@ public class AuthorServiceTests {
     @Mock
     private AuthorRepository authorRepository;
 
-    @InjectMocks
-    private AuthorService authorService;
+    @InjectMocks private AuthorService authorService = new AuthorServiceImpl();
 
     @BeforeAll
     static void beforeAll() {
@@ -106,7 +105,6 @@ public class AuthorServiceTests {
 
         Author update = new Author(123L, "Update", "Name");
 
-        when(authorRepository.existsById(123L)).thenReturn(true);
         when(authorRepository.findById(123L)).thenReturn(Optional.of(author));
         when(authorRepository.save(any(Author.class))).thenReturn(update);
 
@@ -126,6 +124,6 @@ public class AuthorServiceTests {
 
         assertThrows(AuthorNotFoundException.class, () -> authorService.updateAuthor(update, 12L));
 
-        verify(authorRepository).existsById(12L);
+        verify(authorRepository).findById(12L);
     }
 }

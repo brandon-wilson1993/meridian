@@ -1,4 +1,4 @@
-package com.meridian.api.authors;
+package com.meridian.api.author;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AuthorService {
+public class AuthorServiceImpl implements AuthorService {
 
     @Autowired
     private AuthorRepository authorsRepository;
@@ -20,7 +20,7 @@ public class AuthorService {
 
         if (!authorsRepository.existsById(id)) {
 
-            throw new AuthorNotFoundException(id);
+            throw new AuthorNotFoundException("Author with id " + id + " not found");
         }
 
         authorsRepository.deleteById(id);
@@ -33,15 +33,10 @@ public class AuthorService {
 
     public Author getAuthorById(Long id) {
 
-        return authorsRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException(id));
+        return authorsRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException("Author with id " + id + " not found"));
     }
 
     public Author updateAuthor(Author updatedAuthor, Long id) {
-
-        if(!authorsRepository.existsById(id)) {
-
-            throw new AuthorNotFoundException(id);
-        }
 
         return authorsRepository
                 .findById(id)
@@ -51,9 +46,7 @@ public class AuthorService {
                             platform.setLastName(updatedAuthor.getLastName());
                             return authorsRepository.save(platform);
                         })
-                .orElseGet(
-                        () -> {
-                            return authorsRepository.save(updatedAuthor);
-                        });
+                .orElseThrow(
+                        () -> new AuthorNotFoundException("Author with id " + id + " not found"));
     }
 }
