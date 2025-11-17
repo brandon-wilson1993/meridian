@@ -31,5 +31,14 @@ jobs:
           compose-file: "./docker-compose.yml"
           down-flags: "--volumes"
 
+      - name: Run Spring Boot application
+        run: mvn spring-boot:run
+
       - name: Check running containers
         run: sleep 10 && docker logs flyway
+
+      - name: Run Integration Tests
+        run: mvn failsafe:integration-test
+
+      - name: Verify Integration Tests
+        run: mvn failsafe:verify
