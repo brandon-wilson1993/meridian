@@ -1,10 +1,10 @@
 package com.meridian.api.users;
 
-public class AuthorNotFoundException extends RuntimeException {
+public class UsersNotFoundException extends RuntimeException {
 
     private String message;
 
-    public AuthorNotFoundException(String message) {
+    public UsersNotFoundException(String message) {
 
         super(message);
         this.message = message;

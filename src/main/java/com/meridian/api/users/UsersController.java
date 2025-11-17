@@ -14,14 +14,14 @@ import java.util.List;
 @RestController
 public class UsersController {
 
-    private final UsersModelAssembler authorsModelAssembler;
+    private final UsersModelAssembler usersModelAssembler;
 
     @Autowired
-    private AuthorService authorService;
+    private UsersService usersService;
 
     public UsersController(UsersModelAssembler assembler) {
 
-        this.authorsModelAssembler = assembler;
+        this.usersModelAssembler = assembler;
     }
 
     // TODO: only allowed in dev environments
@@ -29,7 +29,7 @@ public class UsersController {
     public ResponseEntity<EntityModel<Users>> createAuthor(@RequestBody Users newAuthor) {
 
         EntityModel<Users> entityModel =
-                authorsModelAssembler.toModel(authorService.createAuthor(newAuthor));
+                usersModelAssembler.toModel(usersService.createUser(newAuthor));
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
@@ -39,7 +39,7 @@ public class UsersController {
     @DeleteMapping("/authors/{id}")
     public ResponseEntity<EntityModel<Users>> deleteAuthorById(@PathVariable("id") Long id) {
 
-        authorService.deleteAuthorById(id);
+        usersService.deleteUserById(id);
 
         return ResponseEntity.ok().build();
     }
@@ -48,8 +48,8 @@ public class UsersController {
     public CollectionModel<EntityModel<Users>> getAllAuthors() {
 
         List<EntityModel<Users>> platforms =
-                authorService.getAllAuthors().stream()
-                        .map(authorsModelAssembler::toModel)
+                usersService.getAllUsers().stream()
+                        .map(usersModelAssembler::toModel)
                         .toList();
 
         return CollectionModel.of(
@@ -60,9 +60,9 @@ public class UsersController {
     @GetMapping("/authors/{id}")
     public EntityModel<Users> getAuthorById(@PathVariable("id") Long id) {
 
-        Users author = authorService.getAuthorById(id);
+        Users author = usersService.getUserById(id);
 
-        return authorsModelAssembler.toModel(author);
+        return usersModelAssembler.toModel(author);
     }
 
     // TODO: only allowed in dev environments
@@ -70,9 +70,9 @@ public class UsersController {
     public ResponseEntity<EntityModel<Users>> updateAuthor(
             @RequestBody Users updatedAuthor, @PathVariable("id") Long id) {
 
-        Users updateAuthor = authorService.updateAuthor(updatedAuthor, id);
+        Users updateAuthor = usersService.updateUser(updatedAuthor, id);
 
-        EntityModel<Users> entityModel = authorsModelAssembler.toModel(updateAuthor);
+        EntityModel<Users> entityModel = usersModelAssembler.toModel(updateAuthor);
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);

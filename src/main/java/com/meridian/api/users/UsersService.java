@@ -1,14 +1,16 @@
 package com.meridian.api.users;
 
-public interface AuthorService {
+import java.util.List;
 
-    Users createAuthor(Users author);
+public interface UsersService {
 
-    void deleteAuthorById(Long id);
+    Users createUser(Users author);
 
-    java.util.List<Users> getAllAuthors();
+    void deleteUserById(Long id);
 
-    Users getAuthorById(Long id);
+    List<Users> getAllUsers();
 
-    Users updateAuthor(Users updatedAuthor, Long id);
+    Users getUserById(Long id);
+
+    Users updateUser(Users updatedAuthor, Long id);
 }

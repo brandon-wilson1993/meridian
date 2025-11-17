@@ -6,47 +6,47 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AuthorServiceImpl implements AuthorService {
+public class UsersServiceImpl implements UsersService {
 
     @Autowired
-    private AuthorRepository authorsRepository;
+    private UsersRepository usersRepository;
 
-    public Users createAuthor(Users author) {
+    public Users createUser(Users author) {
 
-        return authorsRepository.save(author);
+        return usersRepository.save(author);
     }
 
-    public void deleteAuthorById(Long id) {
+    public void deleteUserById(Long id) {
 
-        if (!authorsRepository.existsById(id)) {
+        if (!usersRepository.existsById(id)) {
 
-            throw new AuthorNotFoundException("Author with id " + id + " not found");
+            throw new UsersNotFoundException("User with id " + id + " not found");
         }
 
-        authorsRepository.deleteById(id);
+        usersRepository.deleteById(id);
     }
 
-    public List<Users> getAllAuthors() {
+    public List<Users> getAllUsers() {
 
-        return authorsRepository.findAll();
+        return usersRepository.findAll();
     }
 
-    public Users getAuthorById(Long id) {
+    public Users getUserById(Long id) {
 
-        return authorsRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException("Author with id " + id + " not found"));
+        return usersRepository.findById(id).orElseThrow(() -> new UsersNotFoundException("User with id " + id + " not found"));
     }
 
-    public Users updateAuthor(Users updatedAuthor, Long id) {
+    public Users updateUser(Users updatedAuthor, Long id) {
 
-        return authorsRepository
+        return usersRepository
                 .findById(id)
                 .map(
-                        platform -> {
-                            platform.setFirstName(updatedAuthor.getFirstName());
-                            platform.setLastName(updatedAuthor.getLastName());
-                            return authorsRepository.save(platform);
+                        user -> {
+                            user.setFirstName(updatedAuthor.getFirstName());
+                            user.setLastName(updatedAuthor.getLastName());
+                            return usersRepository.save(user);
                         })
                 .orElseThrow(
-                        () -> new AuthorNotFoundException("Author with id " + id + " not found"));
+                        () -> new UsersNotFoundException("User with id " + id + " not found"));
     }
 }
