@@ -1,4 +1,4 @@
-package com.meridian.api.author;
+package com.meridian.api.users;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -12,23 +12,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public class AuthorController {
+public class UsersController {
 
-    private final AuthorModelAssembler authorsModelAssembler;
+    private final UsersModelAssembler authorsModelAssembler;
 
     @Autowired
     private AuthorService authorService;
 
-    public AuthorController(AuthorModelAssembler assembler) {
+    public UsersController(UsersModelAssembler assembler) {
 
         this.authorsModelAssembler = assembler;
     }
 
     // TODO: only allowed in dev environments
     @PostMapping("/authors")
-    public ResponseEntity<EntityModel<Author>> createAuthor(@RequestBody Author newAuthor) {
+    public ResponseEntity<EntityModel<Users>> createAuthor(@RequestBody Users newAuthor) {
 
-        EntityModel<Author> entityModel =
+        EntityModel<Users> entityModel =
                 authorsModelAssembler.toModel(authorService.createAuthor(newAuthor));
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -37,7 +37,7 @@ public class AuthorController {
 
     // TODO: only allowed in dev environments
     @DeleteMapping("/authors/{id}")
-    public ResponseEntity<EntityModel<Author>> deleteAuthorById(@PathVariable("id") Long id) {
+    public ResponseEntity<EntityModel<Users>> deleteAuthorById(@PathVariable("id") Long id) {
 
         authorService.deleteAuthorById(id);
 
@@ -45,34 +45,34 @@ public class AuthorController {
     }
 
     @GetMapping("/authors")
-    public CollectionModel<EntityModel<Author>> getAllAuthors() {
+    public CollectionModel<EntityModel<Users>> getAllAuthors() {
 
-        List<EntityModel<Author>> platforms =
+        List<EntityModel<Users>> platforms =
                 authorService.getAllAuthors().stream()
                         .map(authorsModelAssembler::toModel)
                         .toList();
 
         return CollectionModel.of(
                 platforms,
-                linkTo(methodOn(AuthorController.class).getAllAuthors()).withSelfRel());
+                linkTo(methodOn(UsersController.class).getAllAuthors()).withSelfRel());
     }
 
     @GetMapping("/authors/{id}")
-    public EntityModel<Author> getAuthorById(@PathVariable("id") Long id) {
+    public EntityModel<Users> getAuthorById(@PathVariable("id") Long id) {
 
-        Author author = authorService.getAuthorById(id);
+        Users author = authorService.getAuthorById(id);
 
         return authorsModelAssembler.toModel(author);
     }
 
     // TODO: only allowed in dev environments
     @PutMapping("/authors/{id}")
-    public ResponseEntity<EntityModel<Author>> updateAuthor(
-            @RequestBody Author updatedAuthor, @PathVariable("id") Long id) {
+    public ResponseEntity<EntityModel<Users>> updateAuthor(
+            @RequestBody Users updatedAuthor, @PathVariable("id") Long id) {
 
-        Author updateAuthor = authorService.updateAuthor(updatedAuthor, id);
+        Users updateAuthor = authorService.updateAuthor(updatedAuthor, id);
 
-        EntityModel<Author> entityModel = authorsModelAssembler.toModel(updateAuthor);
+        EntityModel<Users> entityModel = authorsModelAssembler.toModel(updateAuthor);
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);

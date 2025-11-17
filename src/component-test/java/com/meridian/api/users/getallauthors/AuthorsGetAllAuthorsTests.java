@@ -1,4 +1,4 @@
-package com.meridian.api.author.getallauthors;
+package com.meridian.api.users.getallauthors;
 
 import com.meridian.api.base.BaseTest;
 import io.restassured.RestAssured;

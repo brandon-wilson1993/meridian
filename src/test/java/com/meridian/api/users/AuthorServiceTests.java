@@ -1,4 +1,4 @@
-package com.meridian.api.author;
+package com.meridian.api.users;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 public class AuthorServiceTests {
 
-    private static Author author;
+    private static Users author;
 
     @Mock
     private AuthorRepository authorRepository;
@@ -27,7 +27,7 @@ public class AuthorServiceTests {
     @BeforeAll
     static void beforeAll() {
 
-        author = new Author(123L, "Testing", "Name");
+        author = new Users(123L, "Testing", "Name");
     }
 
     @Test
@@ -35,7 +35,7 @@ public class AuthorServiceTests {
 
         when(authorRepository.save(author)).thenReturn(author);
 
-        Author result = authorService.createAuthor(author);
+        Users result = authorService.createAuthor(author);
 
         assertEquals(123L, result.getId());
         assertEquals("Testing", result.getFirstName());
@@ -67,14 +67,14 @@ public class AuthorServiceTests {
     @Test
     void getAllAuthors_shouldReturn() {
 
-        Author author1 = new Author(456L, "Testing", "Another");
-        Author author2 = new Author(789L, "Test", "Name");
+        Users author1 = new Users(456L, "Testing", "Another");
+        Users author2 = new Users(789L, "Test", "Name");
 
-        List<Author> authors = Arrays.asList(author, author1, author2);
+        List<Users> authors = Arrays.asList(author, author1, author2);
 
         when(authorRepository.findAll()).thenReturn(authors);
 
-        List<Author> result = authorService.getAllAuthors();
+        List<Users> result = authorService.getAllAuthors();
 
         assertArrayEquals(authors.toArray(), result.toArray());
         verify(authorRepository).findAll();
@@ -85,7 +85,7 @@ public class AuthorServiceTests {
 
         when(authorRepository.findById(123L)).thenReturn(Optional.of(author));
 
-        Author result = authorService.getAuthorById(123L);
+        Users result = authorService.getAuthorById(123L);
 
         assertEquals(123L, result.getId());
         verify(authorRepository).findById(123L);
@@ -103,12 +103,12 @@ public class AuthorServiceTests {
     @Test
     void updateAuthor_shouldUpdate_whenAuthorIsValid() {
 
-        Author update = new Author(123L, "Update", "Name");
+        Users update = new Users(123L, "Update", "Name");
 
         when(authorRepository.findById(123L)).thenReturn(Optional.of(author));
-        when(authorRepository.save(any(Author.class))).thenReturn(update);
+        when(authorRepository.save(any(Users.class))).thenReturn(update);
 
-        Author result = authorService.updateAuthor(update, 123L);
+        Users result = authorService.updateAuthor(update, 123L);
 
         assertEquals(123L, result.getId());
         assertEquals("Update", result.getFirstName());
@@ -120,7 +120,7 @@ public class AuthorServiceTests {
     @Test
     void updateAuthor_shouldNotUpdate_whenIdIsDoesNotExist() {
 
-        Author update = new Author(12L, "Update", "Name");
+        Users update = new Users(12L, "Update", "Name");
 
         assertThrows(AuthorNotFoundException.class, () -> authorService.updateAuthor(update, 12L));
 

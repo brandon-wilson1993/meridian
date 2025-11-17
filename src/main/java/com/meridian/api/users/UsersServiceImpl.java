@@ -1,4 +1,4 @@
-package com.meridian.api.author;
+package com.meridian.api.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Autowired
     private AuthorRepository authorsRepository;
 
-    public Author createAuthor(Author author) {
+    public Users createAuthor(Users author) {
 
         return authorsRepository.save(author);
     }
@@ -26,17 +26,17 @@ public class AuthorServiceImpl implements AuthorService {
         authorsRepository.deleteById(id);
     }
 
-    public List<Author> getAllAuthors() {
+    public List<Users> getAllAuthors() {
 
         return authorsRepository.findAll();
     }
 
-    public Author getAuthorById(Long id) {
+    public Users getAuthorById(Long id) {
 
         return authorsRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException("Author with id " + id + " not found"));
     }
 
-    public Author updateAuthor(Author updatedAuthor, Long id) {
+    public Users updateAuthor(Users updatedAuthor, Long id) {
 
         return authorsRepository
                 .findById(id)

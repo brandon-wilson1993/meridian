@@ -1,4 +1,4 @@
-package com.meridian.api.author;
+package com.meridian.api.users;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.EntityModel;
@@ -10,10 +10,10 @@ public class AuthorModelAssemblerTests {
     @Test
     void authorModel_returnsCorrectly() {
 
-        Author author = new Author(123L, "Assembler", "Test");
+        Users author = new Users(123L, "Assembler", "Test");
 
-        AuthorModelAssembler authorModelAssembler = new AuthorModelAssembler();
-        EntityModel<Author> model = authorModelAssembler.toModel(author);
+        UsersModelAssembler authorModelAssembler = new UsersModelAssembler();
+        EntityModel<Users> model = authorModelAssembler.toModel(author);
 
         assertEquals(123L, model.getContent().getId());
         assertEquals("Assembler", model.getContent().getFirstName());
