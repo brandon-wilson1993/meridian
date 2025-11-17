@@ -1,19 +1,19 @@
-package com.meridian.api.users.getbyid;
+package integration.com.meridian.api.users.getbyid;
 
-import com.meridian.api.base.BaseTest;
+import integration.com.meridian.api.base.BaseTest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class AuthorGetByIdComponentTests extends BaseTest {
+public class UsersGetByIdIntegrationTests extends BaseTest {
 
     @Test
     void getByIdReturns200StatusCode() {
 
         Response response = RestAssured.given()
-                .get("/authors/1");
+                .get("/users/1");
 
         response.then().statusCode(200).and()
                 .body("id", equalTo(1))
@@ -25,7 +25,7 @@ public class AuthorGetByIdComponentTests extends BaseTest {
     void getByIdReturns404StatusCodeWhenAuthorNotFound() {
 
         Response response = RestAssured.given()
-                .get("/authors/9999");
+                .get("/users/9999");
 
         response.prettyPrint();
         response.then().statusCode(404);

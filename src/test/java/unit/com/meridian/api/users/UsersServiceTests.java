@@ -1,8 +1,9 @@
-package com.meridian.api.users;
+package unit.com.meridian.api.users;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.meridian.api.users.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

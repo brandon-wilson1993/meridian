@@ -1,4 +1,4 @@
-package com.meridian.api.base;
+package integration.com.meridian.api.base;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
