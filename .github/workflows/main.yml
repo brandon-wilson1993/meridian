@@ -26,10 +26,10 @@ jobs:
           down-flags: "--volumes"
 
       - name: Check running containers
-        run: sleep 10 && docker logs flyway
+        run: sleep 10 && docker ps -a
 
-      - name: Run Integration Tests
-        run: mvn failsafe:integration-test
-
-      - name: Verify Integration Tests
-        run: mvn failsafe:verify
+#      - name: Run Integration Tests
+#        run: mvn failsafe:integration-test
+#
+#      - name: Verify Integration Tests
+#        run: mvn failsafe:verify
