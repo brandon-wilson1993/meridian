@@ -25,9 +25,6 @@ jobs:
           compose-file: "./docker-compose-cicd.yml"
           down-flags: "--volumes"
 
-      - name: Run Spring Boot application
-        run: mvn spring-boot:run
-
       - name: Check running containers
         run: sleep 10 && docker logs flyway
 
