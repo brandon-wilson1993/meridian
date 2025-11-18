@@ -28,8 +28,8 @@ jobs:
       - name: Check running containers
         run: sleep 10 && curl http://localhost:8080/
 
-#      - name: Run Integration Tests
-#        run: mvn failsafe:integration-test
-#
-#      - name: Verify Integration Tests
-#        run: mvn failsafe:verify
+      - name: Run Integration Tests
+        run: mvn failsafe:integration-test
+
+      - name: Verify Integration Tests
+        run: mvn failsafe:verify
