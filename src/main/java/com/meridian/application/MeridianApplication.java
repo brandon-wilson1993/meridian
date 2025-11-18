@@ -1,5 +1,6 @@
 package com.meridian.application;
 
+import com.meridian.api.errors.GlobalExceptionHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -7,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.meridian.api.users"})
+@ComponentScan(basePackages = {"com.meridian.api.*"})
 @EntityScan(basePackages = {"com.meridian.api.users"})
 @EnableJpaRepositories(basePackages = {"com.meridian.api.users"})
 public class MeridianApplication {
