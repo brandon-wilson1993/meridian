@@ -8,7 +8,7 @@ public class BaseTest {
     @BeforeAll
     static void setup() {
 
-        RestAssured.baseURI = "http://meridian:8080";
+        RestAssured.baseURI = "http://localhost:8080";
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 }
