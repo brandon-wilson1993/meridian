@@ -1,5 +1,9 @@
-package com.meridian.api.users;
+package unit.com.meridian.api.users;
 
+import com.meridian.api.users.Users;
+import com.meridian.api.users.UsersController;
+import com.meridian.api.users.UsersModelAssembler;
+import com.meridian.api.users.UsersService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

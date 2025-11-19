@@ -16,8 +16,7 @@ public class UsersController {
 
     private final UsersModelAssembler usersModelAssembler;
 
-    @Autowired
-    private UsersService usersService;
+    @Autowired private UsersService usersService;
 
     public UsersController(UsersModelAssembler assembler) {
 
@@ -25,7 +24,7 @@ public class UsersController {
     }
 
     // TODO: only allowed in dev environments
-    @PostMapping("/authors")
+    @PostMapping("/users")
     public ResponseEntity<EntityModel<Users>> createUser(@RequestBody Users newAuthor) {
 
         EntityModel<Users> entityModel =
@@ -36,7 +35,7 @@ public class UsersController {
     }
 
     // TODO: only allowed in dev environments
-    @DeleteMapping("/authors/{id}")
+    @DeleteMapping("/users/{id}")
     public ResponseEntity<EntityModel<Users>> deleteUserById(@PathVariable("id") Long id) {
 
         usersService.deleteUserById(id);
@@ -44,20 +43,17 @@ public class UsersController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/authors")
+    @GetMapping("/users")
     public CollectionModel<EntityModel<Users>> getAllUsers() {
 
         List<EntityModel<Users>> platforms =
-                usersService.getAllUsers().stream()
-                        .map(usersModelAssembler::toModel)
-                        .toList();
+                usersService.getAllUsers().stream().map(usersModelAssembler::toModel).toList();
 
         return CollectionModel.of(
-                platforms,
-                linkTo(methodOn(UsersController.class).getAllUsers()).withSelfRel());
+                platforms, linkTo(methodOn(UsersController.class).getAllUsers()).withSelfRel());
     }
 
-    @GetMapping("/authors/{id}")
+    @GetMapping("/users/{id}")
     public EntityModel<Users> getUserById(@PathVariable("id") Long id) {
 
         Users author = usersService.getUserById(id);
@@ -66,7 +62,7 @@ public class UsersController {
     }
 
     // TODO: only allowed in dev environments
-    @PutMapping("/authors/{id}")
+    @PutMapping("/users/{id}")
     public ResponseEntity<EntityModel<Users>> updateUser(
             @RequestBody Users updatedAuthor, @PathVariable("id") Long id) {
 

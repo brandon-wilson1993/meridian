@@ -8,8 +8,7 @@ import java.util.List;
 @Service
 public class UsersServiceImpl implements UsersService {
 
-    @Autowired
-    private UsersRepository usersRepository;
+    @Autowired private UsersRepository usersRepository;
 
     public Users createUser(Users author) {
 
@@ -20,7 +19,7 @@ public class UsersServiceImpl implements UsersService {
 
         if (!usersRepository.existsById(id)) {
 
-            throw new UsersNotFoundException("User with id " + id + " not found");
+            throw new ResourceNotFoundException("User with id " + id + " not found");
         }
 
         usersRepository.deleteById(id);
@@ -33,7 +32,10 @@ public class UsersServiceImpl implements UsersService {
 
     public Users getUserById(Long id) {
 
-        return usersRepository.findById(id).orElseThrow(() -> new UsersNotFoundException("User with id " + id + " not found"));
+        return usersRepository
+                .findById(id)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("User with id " + id + " not found"));
     }
 
     public Users updateUser(Users updatedAuthor, Long id) {
@@ -47,6 +49,6 @@ public class UsersServiceImpl implements UsersService {
                             return usersRepository.save(user);
                         })
                 .orElseThrow(
-                        () -> new UsersNotFoundException("User with id " + id + " not found"));
+                        () -> new ResourceNotFoundException("User with id " + id + " not found"));
     }
 }

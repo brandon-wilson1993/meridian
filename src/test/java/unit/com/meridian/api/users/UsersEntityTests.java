@@ -1,5 +1,6 @@
-package com.meridian.api.users;
+package unit.com.meridian.api.users;
 
+import com.meridian.api.users.Users;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

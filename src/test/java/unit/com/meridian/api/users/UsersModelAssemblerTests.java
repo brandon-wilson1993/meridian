@@ -1,5 +1,7 @@
-package com.meridian.api.users;
+package unit.com.meridian.api.users;
 
+import com.meridian.api.users.Users;
+import com.meridian.api.users.UsersModelAssembler;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.EntityModel;
 
