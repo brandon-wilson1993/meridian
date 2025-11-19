@@ -2,10 +2,14 @@ package com.meridian.api.users;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +17,8 @@ import java.util.List;
 
 @RestController
 public class UsersController {
+
+    Logger logger = LoggerFactory.getLogger(UsersController.class);
 
     private final UsersModelAssembler usersModelAssembler;
 
@@ -25,13 +31,15 @@ public class UsersController {
 
     // TODO: only allowed in dev environments
     @PostMapping("/users")
-    public ResponseEntity<EntityModel<Users>> createUser(@RequestBody Users newAuthor) {
+    public ResponseEntity<UsersDTO> createUser(@Valid @RequestBody UsersDTO newAuthor) {
 
-        EntityModel<Users> entityModel =
-                usersModelAssembler.toModel(usersService.createUser(newAuthor));
+        logger.info("Creating new user: {} {}", newAuthor.getFirstName(), newAuthor.getLastName());
+//        EntityModel<Users> entityModel =
+//                usersModelAssembler.toModel(usersService.createUser(newAuthor));
 
-        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(entityModel);
+        UsersDTO entity = usersService.createUser(newAuthor);
+
+        return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
     // TODO: only allowed in dev environments

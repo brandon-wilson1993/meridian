@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface UsersService {
 
-    Users createUser(Users author);
+    UsersDTO createUser(UsersDTO author);
 
     void deleteUserById(Long id);
 

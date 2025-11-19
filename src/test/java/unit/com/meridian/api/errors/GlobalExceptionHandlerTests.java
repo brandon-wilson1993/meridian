@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.meridian.api.errors.ErrorResponse;
 import com.meridian.api.errors.GlobalExceptionHandler;
-import com.meridian.api.users.ResourceNotFoundException;
+import com.meridian.api.errors.ResourceNotFoundException;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;

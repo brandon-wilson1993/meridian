@@ -1,5 +1,7 @@
 package com.meridian.api.users;
 
+import com.meridian.api.errors.ResourceNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +12,14 @@ public class UsersServiceImpl implements UsersService {
 
     @Autowired private UsersRepository usersRepository;
 
-    public Users createUser(Users author) {
+    @Autowired
+    private ModelMapper modelMapper;
 
-        return usersRepository.save(author);
+    public UsersDTO createUser(UsersDTO usersDTO) {
+
+        Users users = usersRepository.save(modelMapper.map(usersDTO, Users.class));
+
+        return modelMapper.map(users, UsersDTO.class);
     }
 
     public void deleteUserById(Long id) {
