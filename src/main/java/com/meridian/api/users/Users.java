@@ -21,13 +21,6 @@ public class Users {
     @Column(name = "last_name")
     private String lastName;
 
-    public Users(Long id, String firstName, String lastName) {
-
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
     public String getFirstName() {
         return firstName;
     }

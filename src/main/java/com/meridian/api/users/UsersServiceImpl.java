@@ -50,7 +50,11 @@ public class UsersServiceImpl implements UsersService {
             throw new ResourceNotFoundException("User with id " + id + " not found");
         }
 
-        return modelMapper.map(usersRepository.findById(id).get(), UsersDTO.class);
+        Optional<Users> user = usersRepository.findById(id);
+
+        UsersDTO usersDTO = modelMapper.map(user.get(), UsersDTO.class);
+
+        return usersDTO;
     }
 
     public UsersDTO updateUser(UsersDTO usersDTO, Long id) {
