@@ -1,4 +1,4 @@
-package integration.com.meridian.api.users.getallusers;
+package integration.com.meridian.api.users.getall;
 
 import integration.com.meridian.api.base.BaseTest;
 import io.restassured.RestAssured;

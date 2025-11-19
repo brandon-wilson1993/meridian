@@ -1,6 +1,5 @@
 package com.meridian.application;
 
-import com.meridian.api.errors.GlobalExceptionHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
