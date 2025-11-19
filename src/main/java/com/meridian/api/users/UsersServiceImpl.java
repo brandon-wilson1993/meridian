@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersServiceImpl implements UsersService {
 
-    @Autowired private UsersRepository usersRepository;
+    @Autowired
+    private UsersRepository usersRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -32,28 +35,35 @@ public class UsersServiceImpl implements UsersService {
         usersRepository.deleteById(id);
     }
 
-    public List<Users> getAllUsers() {
+    public List<UsersDTO> getAllUsers() {
 
-        return usersRepository.findAll();
+        List<Users> list = usersRepository.findAll();
+
+        return list.stream()
+                .map(users -> modelMapper.map(users, UsersDTO.class))
+                .collect(Collectors.toList());
     }
 
-    public Users getUserById(Long id) {
+    public UsersDTO getUserById(Long id) {
 
-        return usersRepository
-                .findById(id)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("User with id " + id + " not found"));
+        if (!usersRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User with id " + id + " not found");
+        }
+
+        return modelMapper.map(usersRepository.findById(id).get(), UsersDTO.class);
     }
 
-    public Users updateUser(Users updatedAuthor, Long id) {
+    public UsersDTO updateUser(UsersDTO usersDTO, Long id) {
 
-        return usersRepository
-                .findById(id)
+        Optional<Users> users = usersRepository.findById(id);
+
+        return users
                 .map(
                         user -> {
-                            user.setFirstName(updatedAuthor.getFirstName());
-                            user.setLastName(updatedAuthor.getLastName());
-                            return usersRepository.save(user);
+                            user.setFirstName(usersDTO.getFirstName());
+                            user.setLastName(usersDTO.getLastName());
+                            Users savedUser = usersRepository.save(user);
+                            return modelMapper.map(savedUser, UsersDTO.class);
                         })
                 .orElseThrow(
                         () -> new ResourceNotFoundException("User with id " + id + " not found"));

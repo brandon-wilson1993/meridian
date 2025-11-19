@@ -30,7 +30,7 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
     }
 
     @Test
-    void updateUserReturns201StatusCode() {
+    void updateUserReturns200StatusCode() {
 
         String body =
                 """
@@ -42,7 +42,7 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
 
         Response response = RestAssured.given().contentType(ContentType.JSON).body(body).put("/users/" + id);
 
-        response.then().statusCode(201).and()
+        response.then().statusCode(200).and()
                 .body("id", equalTo(Integer.parseInt(id)))
                 .body("firstName", equalTo("Updated"))
                 .body("lastName", equalTo("Name2"));

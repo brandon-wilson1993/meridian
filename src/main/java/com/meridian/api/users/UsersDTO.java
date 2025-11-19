@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UsersDTO {
 
+    private Long id;
+
     @NotNull(message = "firstName is required")
     private String firstName;
 
@@ -17,12 +19,20 @@ public class UsersDTO {
         return firstName;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getLastName() {
         return lastName;
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setLastName(String lastName) {
