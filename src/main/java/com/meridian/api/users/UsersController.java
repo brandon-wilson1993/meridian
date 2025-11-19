@@ -16,8 +16,7 @@ public class UsersController {
 
     private final UsersModelAssembler usersModelAssembler;
 
-    @Autowired
-    private UsersService usersService;
+    @Autowired private UsersService usersService;
 
     public UsersController(UsersModelAssembler assembler) {
 
@@ -48,13 +47,10 @@ public class UsersController {
     public CollectionModel<EntityModel<Users>> getAllUsers() {
 
         List<EntityModel<Users>> platforms =
-                usersService.getAllUsers().stream()
-                        .map(usersModelAssembler::toModel)
-                        .toList();
+                usersService.getAllUsers().stream().map(usersModelAssembler::toModel).toList();
 
         return CollectionModel.of(
-                platforms,
-                linkTo(methodOn(UsersController.class).getAllUsers()).withSelfRel());
+                platforms, linkTo(methodOn(UsersController.class).getAllUsers()).withSelfRel());
     }
 
     @GetMapping("/users/{id}")

@@ -27,7 +27,7 @@ public class UsersGetByIdIntegrationTests extends BaseTest {
         Response response = RestAssured.given()
                 .get("/users/9999");
 
-        response.prettyPrint();
-        response.then().statusCode(404);
+        response.then().statusCode(404).and()
+                .body("message", equalTo("User with id 9999 not found"));
     }
 }

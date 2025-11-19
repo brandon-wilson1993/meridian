@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.meridian.api.users.*;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,7 +61,7 @@ public class UsersServiceTests {
 
         when(usersRepository.existsById(12L)).thenReturn(false);
 
-        assertThrows(UsersNotFoundException.class, () -> usersService.deleteUserById(12L));
+        assertThrows(ResourceNotFoundException.class, () -> usersService.deleteUserById(12L));
 
         verify(usersRepository, never()).deleteById(123L);
     }
@@ -97,7 +98,7 @@ public class UsersServiceTests {
 
         when(usersRepository.findById(12L)).thenReturn(Optional.empty());
 
-        assertThrows(UsersNotFoundException.class, () -> usersService.getUserById(12L));
+        assertThrows(ResourceNotFoundException.class, () -> usersService.getUserById(12L));
         verify(usersRepository).findById(12L);
     }
 
@@ -123,7 +124,7 @@ public class UsersServiceTests {
 
         Users update = new Users(12L, "Update", "Name");
 
-        assertThrows(UsersNotFoundException.class, () -> usersService.updateUser(update, 12L));
+        assertThrows(ResourceNotFoundException.class, () -> usersService.updateUser(update, 12L));
 
         verify(usersRepository).findById(12L);
     }
