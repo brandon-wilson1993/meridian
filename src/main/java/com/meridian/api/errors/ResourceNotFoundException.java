@@ -1,4 +1,4 @@
-package com.meridian.api.users;
+package com.meridian.api.errors;
 
 public class ResourceNotFoundException extends RuntimeException {
 

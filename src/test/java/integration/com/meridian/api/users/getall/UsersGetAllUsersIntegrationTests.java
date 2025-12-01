@@ -16,8 +16,8 @@ public class UsersGetAllUsersIntegrationTests extends BaseTest {
                 .get("/users");
 
         response.then().statusCode(200).and()
-                .body("_embedded.usersList.find() { it.id == 1 }.lastName", equalTo("Travis"))
-                .body("_embedded.usersList.find() { it.id == 2 }.lastName", equalTo("Seuss"))
-                .body("_embedded.usersList.find() { it.id == 3 }.lastName", equalTo("Rowling"));
+                .body("find() { it.id == 1 }.lastName", equalTo("Travis"))
+                .body("find() { it.id == 2 }.lastName", equalTo("Seuss"))
+                .body("find() { it.id == 3 }.lastName", equalTo("Rowling"));
     }
 }

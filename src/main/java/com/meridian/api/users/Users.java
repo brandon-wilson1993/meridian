@@ -21,19 +21,16 @@ public class Users {
     @Column(name = "last_name")
     private String lastName;
 
-    public Users(Long id, String firstName, String lastName) {
-
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
     public String getFirstName() {
         return firstName;
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -46,33 +43,5 @@ public class Users {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-
-        if (this == o) return true;
-        if (!(o instanceof Users platform)) return false;
-        return Objects.equals(this.id, platform.id)
-                && Objects.equals(this.firstName, platform.firstName)
-                && Objects.equals(this.lastName, platform.lastName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.firstName, this.lastName);
-    }
-
-    @Override
-    public String toString() {
-        return "Users{ id="
-                + this.id
-                + ", first_name='"
-                + this.firstName
-                + '\''
-                + ", last_name='"
-                + this.lastName
-                + '\''
-                + '}';
     }
 }

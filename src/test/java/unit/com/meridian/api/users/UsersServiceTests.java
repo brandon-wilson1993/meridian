@@ -1,53 +1,69 @@
 package unit.com.meridian.api.users;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+import com.meridian.api.errors.ResourceNotFoundException;
 import com.meridian.api.users.*;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 public class UsersServiceTests {
 
-    private static Users author;
+    private static Users users;
+    private static UsersDTO usersDTO;
 
     @Mock
     private UsersRepository usersRepository;
 
-    @InjectMocks private UsersService usersService = new UsersServiceImpl();
+    @Mock
+    private ModelMapper modelMapper;
+
+    @InjectMocks
+    private UsersService usersService = new UsersServiceImpl();
 
     @BeforeAll
     static void beforeAll() {
 
-        author = new Users(123L, "Testing", "Name");
+        users = new Users();
+        users.setId(123L);
+        users.setFirstName("Testing");
+        users.setLastName("Name");
+
+        usersDTO = new UsersDTO();
+        usersDTO.setId(123L);
+        usersDTO.setFirstName("Testing");
+        usersDTO.setLastName("Name");
     }
 
     @Test
-    void createAuthor_shouldCreate_whenAuthorIsValid() {
+    void createUsers_shouldCreate_whenusersDTOIsValid() {
 
-        when(usersRepository.save(author)).thenReturn(author);
+        when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(usersDTO);
+        when(modelMapper.map(any(UsersDTO.class), eq(Users.class))).thenReturn(users);
+        when(usersRepository.save(any(Users.class))).thenReturn(users);
 
-        Users result = usersService.createUser(author);
+        UsersDTO result = usersService.createUser(modelMapper.map(users, UsersDTO.class));
 
         assertEquals(123L, result.getId());
         assertEquals("Testing", result.getFirstName());
         assertEquals("Name", result.getLastName());
 
-        verify(usersRepository).save(author);
+        verify(usersRepository).save(users);
     }
 
     @Test
-    void deleteAuthorById_shouldDelete_whenIdExists() {
+    void deleteUsersById_shouldDelete_whenIdExists() {
 
         when(usersRepository.existsById(123L)).thenReturn(true);
 
@@ -57,7 +73,7 @@ public class UsersServiceTests {
     }
 
     @Test
-    void deleteAuthorById_shouldNotDelete_whenIdDoesNotExists() {
+    void deleteUsersById_shouldNotDelete_whenIdDoesNotExists() {
 
         when(usersRepository.existsById(12L)).thenReturn(false);
 
@@ -67,64 +83,82 @@ public class UsersServiceTests {
     }
 
     @Test
-    void getAllAuthors_shouldReturn() {
+    void getAllUsers_shouldReturn() {
 
-        Users author1 = new Users(456L, "Testing", "Another");
-        Users author2 = new Users(789L, "Test", "Name");
+        Users users1 = new Users();
+        users1.setId(456L);
+        users1.setFirstName("Testing");
+        users1.setLastName("Another");
 
-        List<Users> authors = Arrays.asList(author, author1, author2);
+        Users users2 = new Users();
+        users2.setId(789L);
+        users2.setFirstName("Test");
+        users2.setLastName("Name");
 
-        when(usersRepository.findAll()).thenReturn(authors);
+        List<Users> users = Arrays.asList(users1, users2);
 
-        List<Users> result = usersService.getAllUsers();
+        when(usersRepository.findAll()).thenReturn(users);
 
-        assertArrayEquals(authors.toArray(), result.toArray());
+        List<UsersDTO> result = usersService.getAllUsers();
+
+        assertArrayEquals(users.stream()
+                .map(user -> modelMapper.map(user, UsersDTO.class)).toArray(), result.toArray());
         verify(usersRepository).findAll();
     }
 
     @Test
-    void getAuthorById_shouldReturn_whenIdExists() {
+    void getUsersById_shouldReturn_whenIdExists() {
 
-        when(usersRepository.findById(123L)).thenReturn(Optional.of(author));
+        when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(usersDTO);
+        when(usersRepository.existsById(123L)).thenReturn(true);
+        when(usersRepository.findById(123L)).thenReturn(Optional.of(users));
 
-        Users result = usersService.getUserById(123L);
+        UsersDTO result = usersService.getUserById(123L);
 
         assertEquals(123L, result.getId());
         verify(usersRepository).findById(123L);
     }
 
     @Test
-    void getAuthorById_shouldNotReturn_whenIdDoesNotExists() {
+    void getUsersById_shouldNotReturn_whenIdDoesNotExists() {
 
-        when(usersRepository.findById(12L)).thenReturn(Optional.empty());
+        when(usersRepository.existsById(12L)).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class, () -> usersService.getUserById(12L));
-        verify(usersRepository).findById(12L);
+        verify(usersRepository).existsById(12L);
     }
 
     @Test
-    void updateAuthor_shouldUpdate_whenAuthorIsValid() {
+    void updateUsers_shouldUpdate_whenUsersDTOIsValid() {
 
-        Users update = new Users(123L, "Update", "Name");
+        Users update = new Users();
+        update.setId(123L);
+        update.setFirstName("Update");
+        update.setLastName("Name");
 
-        when(usersRepository.findById(123L)).thenReturn(Optional.of(author));
+        UsersDTO updatedDTO = new UsersDTO();
+        updatedDTO.setId(123L);
+        updatedDTO.setFirstName("Update");
+        updatedDTO.setLastName("Name");
+
+        when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(updatedDTO);
+        when(usersRepository.findById(123L)).thenReturn(Optional.of(users));
         when(usersRepository.save(any(Users.class))).thenReturn(update);
 
-        Users result = usersService.updateUser(update, 123L);
+        UsersDTO result = usersService.updateUser(modelMapper.map(update, UsersDTO.class), 123L);
 
         assertEquals(123L, result.getId());
         assertEquals("Update", result.getFirstName());
         assertEquals("Name", result.getLastName());
 
-        verify(usersRepository).save(update);
+        verify(usersRepository).findById(123L);
+        verify(usersRepository).save(any(Users.class)); // object changes in lamba function in service
     }
 
     @Test
-    void updateAuthor_shouldNotUpdate_whenIdIsDoesNotExist() {
+    void updateUsers_shouldNotUpdate_whenIdIsDoesNotExist() {
 
-        Users update = new Users(12L, "Update", "Name");
-
-        assertThrows(ResourceNotFoundException.class, () -> usersService.updateUser(update, 12L));
+        assertThrows(ResourceNotFoundException.class, () -> usersService.updateUser(modelMapper.map(users, UsersDTO.class), 12L));
 
         verify(usersRepository).findById(12L);
     }
