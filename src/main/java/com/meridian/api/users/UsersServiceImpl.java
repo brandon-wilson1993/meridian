@@ -67,6 +67,7 @@ public class UsersServiceImpl implements UsersService {
                             user.setFirstName(usersDTO.getFirstName());
                             user.setLastName(usersDTO.getLastName());
                             Users savedUser = usersRepository.save(user);
+                            System.out.println("Updated User: " + savedUser);
                             return modelMapper.map(savedUser, UsersDTO.class);
                         })
                 .orElseThrow(

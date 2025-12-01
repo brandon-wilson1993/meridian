@@ -82,29 +82,29 @@ public class UsersServiceTests {
         verify(usersRepository, never()).deleteById(123L);
     }
 
-//    @Test
-//    void getAllUsers_shouldReturn() {
-//
-//        Users users1 = new Users();
-//        users1.setId(456L);
-//        users1.setFirstName("Testing");
-//        users1.setLastName("Another");
-//
-//        Users users2 = new Users();
-//        users2.setId(789L);
-//        users2.setFirstName("Test");
-//        users2.setLastName("Name");
-//
-//        List<Users> users = Arrays.asList(users1, users2);
-//
-//        when(usersRepository.findAll()).thenReturn(users);
-//
-//        List<UsersDTO> result = usersService.getAllUsers();
-//
-//        assertArrayEquals(users.stream()
-//                .map(user -> modelMapper.map(user, UsersDTO.class)).toArray(), result.toArray());
-//        verify(usersRepository).findAll();
-//    }
+    @Test
+    void getAllUsers_shouldReturn() {
+
+        Users users1 = new Users();
+        users1.setId(456L);
+        users1.setFirstName("Testing");
+        users1.setLastName("Another");
+
+        Users users2 = new Users();
+        users2.setId(789L);
+        users2.setFirstName("Test");
+        users2.setLastName("Name");
+
+        List<Users> users = Arrays.asList(users1, users2);
+
+        when(usersRepository.findAll()).thenReturn(users);
+
+        List<UsersDTO> result = usersService.getAllUsers();
+
+        assertArrayEquals(users.stream()
+                .map(user -> modelMapper.map(user, UsersDTO.class)).toArray(), result.toArray());
+        verify(usersRepository).findAll();
+    }
 
     @Test
     void getUsersById_shouldReturn_whenIdExists() {
@@ -128,36 +128,38 @@ public class UsersServiceTests {
         verify(usersRepository).existsById(12L);
     }
 
-//    @Test
-//    void updateUsers_shouldUpdate_whenusersDTOIsValid() {
-//
-//        Users update = new Users();
-//        update.setId(123L);
-//        update.setFirstName("Update");
-//        update.setLastName("Name");
-//
-//        when(usersRepository.findById(123L)).thenReturn(Optional.of(users));
-//        when(usersRepository.save(any(Users.class))).thenReturn(update);
-//
-//        UsersDTO result = usersService.updateUser(modelMapper.map(update, UsersDTO.class), 123L);
-//
-//        assertEquals(123L, result.getId());
-//        assertEquals("Update", result.getFirstName());
-//        assertEquals("Name", result.getLastName());
-//
-//        verify(usersRepository).save(update);
-//    }
-//
-//    @Test
-//    void updateUsers_shouldNotUpdate_whenIdIsDoesNotExist() {
-//
-//        Users update = new Users();
-//        update.setId(12L);
-//        update.setFirstName("Update");
-//        update.setLastName("Name");
-//
-//        assertThrows(ResourceNotFoundException.class, () -> usersService.updateUser(modelMapper.map(update, UsersDTO.class), 12L));
-//
-//        verify(usersRepository).findById(12L);
-//    }
+    @Test
+    void updateUsers_shouldUpdate_whenUsersDTOIsValid() {
+
+        Users update = new Users();
+        update.setId(123L);
+        update.setFirstName("Update");
+        update.setLastName("Name");
+
+        UsersDTO updatedDTO = new UsersDTO();
+        updatedDTO.setId(123L);
+        updatedDTO.setFirstName("Update");
+        updatedDTO.setLastName("Name");
+
+        when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(updatedDTO);
+        when(usersRepository.findById(123L)).thenReturn(Optional.of(users));
+        when(usersRepository.save(any(Users.class))).thenReturn(update);
+
+        UsersDTO result = usersService.updateUser(modelMapper.map(update, UsersDTO.class), 123L);
+
+        assertEquals(123L, result.getId());
+        assertEquals("Update", result.getFirstName());
+        assertEquals("Name", result.getLastName());
+
+        verify(usersRepository).findById(123L);
+        verify(usersRepository).save(any(Users.class)); // object changes in lamba function in service
+    }
+
+    @Test
+    void updateUsers_shouldNotUpdate_whenIdIsDoesNotExist() {
+
+        assertThrows(ResourceNotFoundException.class, () -> usersService.updateUser(modelMapper.map(users, UsersDTO.class), 12L));
+
+        verify(usersRepository).findById(12L);
+    }
 }
