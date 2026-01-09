@@ -4,14 +4,14 @@ import jakarta.persistence.*;
 
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
-
 @Entity
 @NoArgsConstructor
+@Table(name = "users")
 public class Users {
 
     @SequenceGenerator(name = "idx_seq", sequenceName = "idx_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idx_seq")
+    @Column(name = "user_id")
     @Id
     private Long id;
 
