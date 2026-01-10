@@ -1,5 +1,6 @@
 package com.meridian.api.account;
 
+import com.meridian.api.errors.ResourceNotFoundException;
 import com.meridian.api.users.UsersRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class AccountServiceImpl implements AccountService {
 
         if (!usersRepository.existsById(userId)) {
 
-            throw new RuntimeException("No user found with id " + userId);
+            throw new ResourceNotFoundException("No user found with id " + userId);
         }
 
         Account account = modelMapper.map(accountDTO, Account.class);
@@ -40,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
 
         if (!accountRepository.existsById(id)) {
 
-            throw new RuntimeException("Account with id " + id + " not found");
+            throw new ResourceNotFoundException("Account with id " + id + " not found");
         }
 
         accountRepository.deleteById(id);
@@ -50,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
 
         if (!usersRepository.existsById(userId)) {
 
-            throw new RuntimeException("No user found with id " + userId);
+            throw new ResourceNotFoundException("No user found with id " + userId);
         }
 
         List<Account> accounts = accountRepository.findByUserId(userId);
@@ -75,6 +76,6 @@ public class AccountServiceImpl implements AccountService {
                             return modelMapper.map(savedAccount, AccountDTO.class);
                         })
                 .orElseThrow(
-                        () -> new RuntimeException("Account with id " + id + " not found"));
+                        () -> new ResourceNotFoundException("Account with id " + id + " not found"));
     }
 }
