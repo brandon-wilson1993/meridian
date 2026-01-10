@@ -1,13 +1,13 @@
 package com.meridian.api.account;
 
 import com.meridian.api.users.UsersRepository;
-import com.meridian.api.users.UsersService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -60,7 +60,7 @@ public class AccountServiceImpl implements AccountService {
 
         return accounts.stream()
                 .map(account -> modelMapper.map(account, AccountDTO.class))
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     public AccountDTO updateAccount(AccountDTO updatedAccount, Long id) {

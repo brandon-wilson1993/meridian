@@ -10,7 +10,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,7 +81,7 @@ public class AccountServiceTests {
 
         verify(accountRepository).deleteById(1L);
     }
-    
+
     @Test
     void deleteAccountById_shouldNotDelete_whenIdDoesNotExist() {
 
@@ -86,5 +90,73 @@ public class AccountServiceTests {
         assertThrows(RuntimeException.class, () -> accountService.deleteAccountById(2L));
 
         verify(accountRepository, never()).deleteById(2L);
+    }
+
+    @Test
+    void getAccountsByUserId_shouldReturnAccounts_whenUserExists() {
+
+        Account account2 = new Account();
+        account2.setId(2L);
+        account2.setUserId(1L);
+        account2.setAccountType(AccountType.CHECKING);
+
+        AccountDTO accountDTO2 = new AccountDTO();
+        accountDTO2.setId(2L);
+        accountDTO2.setAccountType(AccountType.CHECKING);
+
+        when(usersRepository.existsById(1L)).thenReturn(true);
+        when(accountRepository.findByUserId(1L)).thenReturn(List.of(account, account2));
+        when(modelMapper.map(any(Account.class), eq(AccountDTO.class))).thenAnswer(invocation -> {
+            Account acc = invocation.getArgument(0);
+            return (acc != null && acc.getId() != null && acc.getId().equals(2L)) ? accountDTO2 : accountDTO;
+        });
+
+        List<AccountDTO> result = accountService.getAccountsByUserId(1L);
+
+        assertEquals(2, result.size());
+        assertEquals(1L, result.get(0).getId());
+        assertEquals(2L, result.get(1).getId());
+        assertEquals(AccountType.SAVINGS, result.get(0).getAccountType());
+        assertEquals(AccountType.CHECKING, result.get(1).getAccountType());
+    }
+
+    @Test
+    void getAccountsByUserId_shouldThrowException_whenUserDoesNotExist() {
+
+        when(usersRepository.existsById(1L)).thenReturn(false);
+
+        assertThrows(RuntimeException.class, () -> accountService.getAccountsByUserId(1L));
+
+        verify(accountRepository, never()).findByUserId(1L);
+    }
+
+    @Test
+    void updateAccount_shouldUpdate_whenIdExists() {
+
+        AccountDTO updatedAccountDTO = new AccountDTO();
+        updatedAccountDTO.setAccountType(AccountType.TRADING);
+        updatedAccountDTO.setId(1L);
+
+        Account updatedAccount = new Account();
+        updatedAccount.setId(1L);
+        updatedAccount.setUserId(1L);
+        updatedAccount.setAccountType(AccountType.TRADING);
+
+        when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any(Account.class))).thenReturn(updatedAccount);
+        when(modelMapper.map(any(Account.class), eq(AccountDTO.class))).thenReturn(updatedAccountDTO);
+
+        AccountDTO result = accountService.updateAccount(updatedAccountDTO, 1L);
+
+        assertEquals(1L, result.getId());
+        assertEquals(AccountType.TRADING, result.getAccountType());
+    }
+
+    @Test
+    void updateAccount_shouldThrowException_whenIdDoesNotExist() {
+
+        assertThrows(RuntimeException.class, () -> accountService.updateAccount(modelMapper.map(account, AccountDTO.class), 1L));
+
+        verify(accountRepository).findById(1L);
     }
 }
