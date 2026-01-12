@@ -1,6 +1,6 @@
 package integration.com.meridian.api.users.create;
 
-import integration.com.meridian.api.base.BaseTest;
+import integration.com.meridian.base.BaseTest;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

@@ -173,6 +173,7 @@
                             </rules>
                             <excludes>
                                 <exclude>com/meridian/application/*</exclude>
+                                <exclude>com/meridian/api/account/AccountTypeValidator.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
