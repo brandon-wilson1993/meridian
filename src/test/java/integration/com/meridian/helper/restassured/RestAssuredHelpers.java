@@ -23,7 +23,7 @@ public class RestAssuredHelpers {
 
         if(!body.isEmpty()) {
 
-          requestSpecification.body(body);
+            requestSpecification.body(body);
         }
 
         Response response = null;
