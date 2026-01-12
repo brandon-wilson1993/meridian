@@ -89,7 +89,7 @@ public class AccountControllerTests {
 
         ResponseEntity<AccountDTO> result = accountController.updateAccount(1L, updatedAccount);
 
-        assertEquals(200, result.getStatusCode().value());
+        assertEquals(201, result.getStatusCode().value());
         assertEquals(1L, result.getBody().getId());
         assertEquals(AccountType.CHECKING, result.getBody().getAccountType());
     }
