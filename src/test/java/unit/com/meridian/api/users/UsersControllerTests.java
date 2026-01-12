@@ -1,5 +1,6 @@
 package unit.com.meridian.api.users;
 
+import com.meridian.api.errors.ResourceNotFoundException;
 import com.meridian.api.users.UsersController;
 import com.meridian.api.users.UsersDTO;
 import com.meridian.api.users.UsersService;
@@ -10,10 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UsersControllerTests {
@@ -111,5 +113,51 @@ public class UsersControllerTests {
         assertEquals(123L, result.getBody().getId());
         assertEquals("Different", result.getBody().getFirstName());
         assertEquals("Name", result.getBody().getLastName());
+    }
+
+    @Test
+    void userController_getAllUsers_shouldReturnEmptyList() {
+
+        when(usersService.getAllUsers()).thenReturn(Collections.emptyList());
+
+        ResponseEntity<List<UsersDTO>> result = usersController.getAllUsers();
+
+        assertEquals(200, result.getStatusCode().value());
+        assertNotNull(result.getBody());
+        assertTrue(result.getBody().isEmpty());
+    }
+
+    @Test
+    void userController_getUserById_shouldThrowException_whenUserNotFound() {
+
+        when(usersService.getUserById(999L))
+                .thenThrow(new ResourceNotFoundException("User with id 999 not found"));
+
+        assertThrows(ResourceNotFoundException.class, 
+                () -> usersController.getUserById(999L));
+    }
+
+    @Test
+    void userController_deleteUserById_shouldThrowException_whenUserNotFound() {
+
+        doThrow(new ResourceNotFoundException("User with id 999 not found"))
+                .when(usersService).deleteUserById(999L);
+
+        assertThrows(ResourceNotFoundException.class, 
+                () -> usersController.deleteUserById(999L));
+    }
+
+    @Test
+    void userController_updateUser_shouldThrowException_whenUserNotFound() {
+
+        UsersDTO updatedUser = new UsersDTO();
+        updatedUser.setFirstName("Updated");
+        updatedUser.setLastName("Name");
+
+        when(usersService.updateUser(updatedUser, 999L))
+                .thenThrow(new ResourceNotFoundException("User with id 999 not found"));
+
+        assertThrows(ResourceNotFoundException.class, 
+                () -> usersController.updateUser(updatedUser, 999L));
     }
 }

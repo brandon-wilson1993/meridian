@@ -1,6 +1,7 @@
 package unit.com.meridian.api.account;
 
 import com.meridian.api.account.*;
+import com.meridian.api.errors.ResourceNotFoundException;
 import com.meridian.api.users.UsersRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,11 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,8 +68,10 @@ public class AccountServiceTests {
 
         when(usersRepository.existsById(1L)).thenReturn(false);
 
-        assertThrows(RuntimeException.class, () -> accountService.createAccount(1L, accountDTO));
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, 
+                () -> accountService.createAccount(1L, accountDTO));
 
+        assertEquals("No user found with id 1", exception.getMessage());
         verify(accountRepository, never()).save(any(Account.class));
     }
 
@@ -87,8 +90,10 @@ public class AccountServiceTests {
 
         when(accountRepository.existsById(2L)).thenReturn(false);
 
-        assertThrows(RuntimeException.class, () -> accountService.deleteAccountById(2L));
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, 
+                () -> accountService.deleteAccountById(2L));
 
+        assertEquals("Account with id 2 not found", exception.getMessage());
         verify(accountRepository, never()).deleteById(2L);
     }
 
@@ -125,9 +130,37 @@ public class AccountServiceTests {
 
         when(usersRepository.existsById(1L)).thenReturn(false);
 
-        assertThrows(RuntimeException.class, () -> accountService.getAccountsByUserId(1L));
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, 
+                () -> accountService.getAccountsByUserId(1L));
 
+        assertEquals("No user found with id 1", exception.getMessage());
         verify(accountRepository, never()).findByUserId(1L);
+    }
+
+    @Test
+    void getAccountsByUserId_shouldReturnEmptyList_whenUserHasNoAccounts() {
+
+        when(usersRepository.existsById(1L)).thenReturn(true);
+        when(accountRepository.findByUserId(1L)).thenReturn(Collections.emptyList());
+
+        List<AccountDTO> result = accountService.getAccountsByUserId(1L);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(accountRepository).findByUserId(1L);
+    }
+
+    @Test
+    void getAccountsByUserId_shouldReturnEmptyList_whenRepositoryReturnsNull() {
+
+        when(usersRepository.existsById(1L)).thenReturn(true);
+        when(accountRepository.findByUserId(1L)).thenReturn(null);
+
+        List<AccountDTO> result = accountService.getAccountsByUserId(1L);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(accountRepository).findByUserId(1L);
     }
 
     @Test
@@ -155,8 +188,13 @@ public class AccountServiceTests {
     @Test
     void updateAccount_shouldThrowException_whenIdDoesNotExist() {
 
-        assertThrows(RuntimeException.class, () -> accountService.updateAccount(modelMapper.map(account, AccountDTO.class), 1L));
+        when(accountRepository.findById(1L)).thenReturn(Optional.empty());
 
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, 
+                () -> accountService.updateAccount(accountDTO, 1L));
+
+        assertEquals("Account with id 1 not found", exception.getMessage());
         verify(accountRepository).findById(1L);
+        verify(accountRepository, never()).save(any(Account.class));
     }
 }

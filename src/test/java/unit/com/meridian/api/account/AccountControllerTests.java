@@ -4,6 +4,7 @@ import com.meridian.api.account.AccountController;
 import com.meridian.api.account.AccountDTO;
 import com.meridian.api.account.AccountService;
 import com.meridian.api.account.AccountType;
+import com.meridian.api.errors.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,10 +12,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountControllerTests {
@@ -92,5 +94,53 @@ public class AccountControllerTests {
         assertEquals(200, result.getStatusCode().value());
         assertEquals(1L, result.getBody().getId());
         assertEquals(AccountType.CHECKING, result.getBody().getAccountType());
+    }
+
+    @Test
+    void accountController_getAllAccounts_shouldReturnEmptyList() {
+
+        when(accountService.getAccountsByUserId(1L)).thenReturn(Collections.emptyList());
+
+        ResponseEntity<List<AccountDTO>> result = accountController.getAllAccounts(1L);
+
+        assertEquals(200, result.getStatusCode().value());
+        assertNotNull(result.getBody());
+        assertTrue(result.getBody().isEmpty());
+    }
+
+    @Test
+    void accountController_createAccount_shouldThrowException_whenUserNotFound() {
+
+        AccountDTO account = new AccountDTO();
+        account.setAccountType(AccountType.SAVINGS);
+
+        when(accountService.createAccount(1L, account))
+                .thenThrow(new ResourceNotFoundException("No user found with id 1"));
+
+        assertThrows(ResourceNotFoundException.class, 
+                () -> accountController.createAccountForUser(1L, account));
+    }
+
+    @Test
+    void accountController_deleteAccountById_shouldThrowException_whenAccountNotFound() {
+
+        doThrow(new ResourceNotFoundException("Account with id 1 not found"))
+                .when(accountService).deleteAccountById(1L);
+
+        assertThrows(ResourceNotFoundException.class, 
+                () -> accountController.deleteAccountById(1L));
+    }
+
+    @Test
+    void accountController_updateAccount_shouldThrowException_whenAccountNotFound() {
+
+        AccountDTO updatedAccount = new AccountDTO();
+        updatedAccount.setAccountType(AccountType.CHECKING);
+
+        when(accountService.updateAccount(updatedAccount, 1L))
+                .thenThrow(new ResourceNotFoundException("Account with id 1 not found"));
+
+        assertThrows(ResourceNotFoundException.class, 
+                () -> accountController.updateAccount(1L, updatedAccount));
     }
 }
