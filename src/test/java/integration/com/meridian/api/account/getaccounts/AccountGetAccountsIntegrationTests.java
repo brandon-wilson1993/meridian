@@ -27,4 +27,13 @@ public class AccountGetAccountsIntegrationTests extends BaseTest {
                 .body(String.format("find() { it.id == %s }.accountType", testDataService.getSavingAccountId()), equalTo("SAVINGS"))
                 .body(String.format("find() { it.id == %s }.accountType", testDataService.getTradingAccountId()), equalTo("TRADING"));
     }
+
+    @Test
+    void getAccountsReturns200StatusCodeInvalidUserId() {
+
+        Response response = RestAssuredHelpers.requestHelper("/users/9999/accounts", RequestType.GET);
+
+        response.then().statusCode(404).and()
+                .body("message", equalTo("No user found with id 9999"));
+    }
 }
