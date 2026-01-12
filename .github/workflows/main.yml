@@ -19,35 +19,6 @@ jobs:
       - name: Build with Maven
         run: mvn package -Dskip.integration.tests=true
 
-      - name: Debug Maven build failure
-        if: ${{ failure() }}
-        run: |
-          echo "=== Java and Maven versions ==="
-          java -version || true
-          mvn -v || true
-
-          echo "=== Re-running Maven in debug mode to capture full output (this will not fail the job) ==="
-          mvn -B -e -X package -Dskip.integration.tests=true || true
-
-          echo "=== Workspace listing (top-level) ==="
-          ls -la || true
-
-          echo "=== Last 200 lines of common Maven log files and surefire reports (if present) ==="
-          if [ -d target/surefire-reports ]; then
-            echo "== surefire-reports =="
-            for f in target/surefire-reports/*; do
-              echo "---- $f ----"
-              tail -n 200 "$f" || true
-            done
-          fi
-
-          if ls target/*.log 1> /dev/null 2>&1; then
-            for f in target/*.log; do
-              echo "---- $f ----"
-              tail -n 200 "$f" || true
-            done
-          fi
-
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@3846bcd61da338e9eaaf83e7ed0234a12b099b72 # v2.4.1
         with:
