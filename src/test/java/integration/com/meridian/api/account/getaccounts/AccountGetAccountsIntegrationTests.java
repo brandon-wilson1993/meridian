@@ -33,7 +33,7 @@ public class AccountGetAccountsIntegrationTests extends BaseTest {
 
         Response response = RestAssuredHelpers.requestHelper("/users/9999/accounts", RequestType.GET);
 
-        response.then().statusCode(404).and()
+        response.then().statusCode(402).and()
                 .body("message", equalTo("No user found with id 9999"));
     }
 }
