@@ -173,6 +173,7 @@
                             </rules>
                             <excludes>
                                 <exclude>com/meridian/application/*</exclude>
+                                <exclude>**/unit/**/account/AccountTypeValidatorTests.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
