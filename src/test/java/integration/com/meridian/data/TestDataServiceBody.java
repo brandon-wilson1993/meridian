@@ -7,6 +7,11 @@ public enum TestDataServiceBody {
             	"accountType": "CHECKING"
             }
             """),
+    CREATE_ACCOUNT_CREDIT("""
+            {
+            	"accountType": "CREDIT"
+            }
+            """),
     CREATE_ACCOUNT_TRADING("""
             {
             	"accountType": "TRADING"
