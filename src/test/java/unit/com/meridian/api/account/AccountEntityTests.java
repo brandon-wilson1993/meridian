@@ -20,4 +20,17 @@ public class AccountEntityTests {
         assertEquals(1L, account.getUserId());
         assertEquals(AccountType.SAVINGS, account.getAccountType());
     }
+
+    @Test
+    void accountEntity_withCreditAccountType() {
+
+        Account account = new Account();
+        account.setId(2L);
+        account.setUserId(1L);
+        account.setAccountType(AccountType.CREDIT);
+
+        assertEquals(2L, account.getId());
+        assertEquals(1L, account.getUserId());
+        assertEquals(AccountType.CREDIT, account.getAccountType());
+    }
 }

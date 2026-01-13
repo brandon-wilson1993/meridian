@@ -7,6 +7,7 @@ import integration.com.meridian.helper.restassured.RestAssuredHelpers;
 public class TestDataService {
 
     private Long checkingAccountId;
+    private Long creditAccountId;
     private Long savingAccountId;
     private Long tradingAccountId;
     private Long userId;
@@ -18,6 +19,10 @@ public class TestDataService {
 
     public Long getCheckingAccountId() {
         return checkingAccountId;
+    }
+
+    public Long getCreditAccountId() {
+        return creditAccountId;
     }
 
     public Long getSavingAccountId() {
@@ -37,6 +42,7 @@ public class TestDataService {
         userId = RestAssuredHelpers.requestHelper("/users", RequestType.POST, TestDataServiceBody.CREATE_USER.getBody()).then().extract().jsonPath().getLong("id");
 
         checkingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_CHECKING.getBody()).then().extract().jsonPath().getLong("id");
+        creditAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_CREDIT.getBody()).then().extract().jsonPath().getLong("id");
         savingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_SAVINGS.getBody()).then().extract().jsonPath().getLong("id");
         tradingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_TRADING.getBody()).then().extract().jsonPath().getLong("id");
     }
