@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,6 +104,18 @@ public class UsersServiceTests {
 
         assertArrayEquals(users.stream()
                 .map(user -> modelMapper.map(user, UsersDTO.class)).toArray(), result.toArray());
+        verify(usersRepository).findAll();
+    }
+
+    @Test
+    void getAllUsers_shouldReturnEmptyList_whenNoUsersExist() {
+
+        when(usersRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<UsersDTO> result = usersService.getAllUsers();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
         verify(usersRepository).findAll();
     }
 
