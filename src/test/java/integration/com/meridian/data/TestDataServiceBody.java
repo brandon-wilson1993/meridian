@@ -22,6 +22,25 @@ public enum TestDataServiceBody {
             	"accountType": "SAVINGS"
             }
             """),
+    CREATE_ACCOUNT_DEBIT("""
+            {
+            	"accountType": "DEBIT"
+            }
+            """),
+    CREATE_CARD_CREDIT("""
+            {
+            	"accountId": %s,
+            	"cardNumber": "4532123456789012",
+            	"cardType": "CREDIT"
+            }
+            """),
+    CREATE_CARD_DEBIT("""
+            {
+            	"accountId": %s,
+            	"cardNumber": "5532123456789012",
+            	"cardType": "DEBIT"
+            }
+            """),
     CREATE_USER("""
             {
             	"firstName": "Testing",

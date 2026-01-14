@@ -8,6 +8,7 @@ public class TestDataService {
 
     private Long checkingAccountId;
     private Long creditAccountId;
+    private Long debitAccountId;
     private Long savingAccountId;
     private Long tradingAccountId;
     private Long userId;
@@ -23,6 +24,10 @@ public class TestDataService {
 
     public Long getCreditAccountId() {
         return creditAccountId;
+    }
+
+    public Long getDebitAccountId() {
+        return debitAccountId;
     }
 
     public Long getSavingAccountId() {
@@ -43,6 +48,7 @@ public class TestDataService {
 
         checkingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_CHECKING.getBody()).then().extract().jsonPath().getLong("id");
         creditAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_CREDIT.getBody()).then().extract().jsonPath().getLong("id");
+        debitAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_DEBIT.getBody()).then().extract().jsonPath().getLong("id");
         savingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_SAVINGS.getBody()).then().extract().jsonPath().getLong("id");
         tradingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_TRADING.getBody()).then().extract().jsonPath().getLong("id");
     }
