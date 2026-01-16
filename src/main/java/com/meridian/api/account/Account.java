@@ -2,7 +2,6 @@ package com.meridian.api.account;
 
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 @Entity
 @NoArgsConstructor
@@ -11,7 +10,6 @@ public class Account {
 
     @SequenceGenerator(name = "idx_seq", sequenceName = "idx_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idx_seq")
-    @Column(name = "account_id")
     @Id
     private Long id;
 

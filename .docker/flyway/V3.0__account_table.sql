@@ -1,7 +1,7 @@
-CREATE TYPE account_type AS ENUM ('SAVINGS', 'CHECKING', 'TRADING');
+CREATE TYPE account_type AS ENUM ('SAVINGS', 'CHECKING', 'CREDIT', 'TRADING');
 
 CREATE TABLE account (
-    account_id BIGINT DEFAULT nextval('idx_seq') PRIMARY KEY,
+    id BIGINT DEFAULT nextval('idx_seq') PRIMARY KEY,
     user_id BIGINT REFERENCES users(user_id),
     account_type account_type NOT NULL
 );
@@ -9,4 +9,10 @@ CREATE TABLE account (
 INSERT INTO account (user_id, account_type) VALUES
 (1, 'SAVINGS'),
 (2, 'CHECKING'),
-(3, 'TRADING');
+(3, 'TRADING'),
+(4, 'CREDIT'),;
+(5, 'SAVINGS'),
+(6, 'CHECKING'),
+(7, 'TRADING'),
+(8, 'CREDIT'),
+(9, 'SAVINGS');
