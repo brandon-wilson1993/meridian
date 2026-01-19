@@ -42,4 +42,25 @@ public class AccountCreateAccountIntegrationTests extends BaseTest {
         response.then().statusCode(404).and()
                 .body("message", equalTo("No user found with id 999"));
     }
+
+    @Test
+    void createAccount_withoutAuthorizationHeader_returns401() {
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(body)
+                .post("/users/1/accounts");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void createAccount_withInvalidToken_returns401() {
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer invalid.token.here")
+                .body(body)
+                .post("/users/1/accounts");
+
+        response.then().statusCode(401);
+    }
 }

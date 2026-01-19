@@ -55,4 +55,41 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
                 .body("firstName", equalTo("Updated"))
                 .body("lastName", equalTo("Name2"));
     }
+
+    @Test
+    void updateUser_withoutAuthorizationHeader_returns401() {
+        String body =
+                """
+                {
+                      "firstName": "Updated",
+                      "lastName": "Name"
+                }
+                """;
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(body)
+                .put("/users/1");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void updateUser_withInvalidToken_returns401() {
+        String body =
+                """
+                {
+                      "firstName": "Updated",
+                      "lastName": "Name"
+                }
+                """;
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer invalid.token.here")
+                .body(body)
+                .put("/users/1");
+
+        response.then().statusCode(401);
+    }
 }

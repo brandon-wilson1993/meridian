@@ -3,6 +3,8 @@ package integration.com.meridian.api.account.update;
 import integration.com.meridian.base.BaseTest;
 import integration.com.meridian.helper.restassured.RequestType;
 import integration.com.meridian.helper.restassured.RestAssuredHelpers;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -40,5 +42,26 @@ public class AccountUpdateAccountIntegrationTests extends BaseTest {
 
         response.then().statusCode(404).and()
                 .body("message", equalTo("Account with id 9999 not found"));
+    }
+
+    @Test
+    void updateAccount_withoutAuthorizationHeader_returns401() {
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(body)
+                .put("/accounts/1");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void updateAccount_withInvalidToken_returns401() {
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer invalid.token.here")
+                .body(body)
+                .put("/accounts/1");
+
+        response.then().statusCode(401);
     }
 }

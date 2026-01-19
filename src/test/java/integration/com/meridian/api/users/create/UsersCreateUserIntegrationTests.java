@@ -1,6 +1,7 @@
 package integration.com.meridian.api.users.create;
 
 import integration.com.meridian.base.BaseTest;
+import integration.com.meridian.helper.jwt.JwtTokenHelper;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -32,5 +33,39 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
         response.then().statusCode(201).and()
                 .body("firstName", equalTo("Testing"))
                 .body("lastName", equalTo("Name"));
+    }
+
+    @Test
+    void createUser_withoutAuthorizationHeader_returns401() {
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(body)
+                .post("/users");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void createUser_withInvalidToken_returns401() {
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer invalid.token.here")
+                .body(body)
+                .post("/users");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void createUser_withExpiredToken_returns401() {
+        String expiredToken = JwtTokenHelper.generateExpiredToken();
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + expiredToken)
+                .body(body)
+                .post("/users");
+
+        response.then().statusCode(401);
     }
 }

@@ -32,4 +32,21 @@ public class UsersGetByIdIntegrationTests extends BaseTest {
         response.then().statusCode(404).and()
                 .body("message", equalTo("User with id 9999 not found"));
     }
+
+    @Test
+    void getUserById_withoutAuthorizationHeader_returns401() {
+        Response response = RestAssured.given()
+                .get("/users/1");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void getUserById_withInvalidToken_returns401() {
+        Response response = RestAssured.given()
+                .header("Authorization", "Bearer invalid.token.here")
+                .get("/users/1");
+
+        response.then().statusCode(401);
+    }
 }

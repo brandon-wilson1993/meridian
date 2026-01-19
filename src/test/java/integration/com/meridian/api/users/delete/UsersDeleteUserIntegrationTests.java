@@ -41,4 +41,21 @@ public class UsersDeleteUserIntegrationTests extends BaseTest {
 
         response.then().statusCode(200);
     }
+
+    @Test
+    void deleteUser_withoutAuthorizationHeader_returns401() {
+        Response response = RestAssured.given()
+                .delete("/users/1");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void deleteUser_withInvalidToken_returns401() {
+        Response response = RestAssured.given()
+                .header("Authorization", "Bearer invalid.token.here")
+                .delete("/users/1");
+
+        response.then().statusCode(401);
+    }
 }

@@ -3,6 +3,7 @@ package integration.com.meridian.api.account.getaccounts;
 import integration.com.meridian.base.BaseTest;
 import integration.com.meridian.helper.restassured.RequestType;
 import integration.com.meridian.helper.restassured.RestAssuredHelpers;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,5 +36,22 @@ public class AccountGetAccountsIntegrationTests extends BaseTest {
 
         response.then().statusCode(404).and()
                 .body("message", equalTo("No user found with id 9999"));
+    }
+
+    @Test
+    void getAllAccounts_withoutAuthorizationHeader_returns401() {
+        Response response = RestAssured.given()
+                .get("/users/1/accounts");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void getAllAccounts_withInvalidToken_returns401() {
+        Response response = RestAssured.given()
+                .header("Authorization", "Bearer invalid.token.here")
+                .get("/users/1/accounts");
+
+        response.then().statusCode(401);
     }
 }

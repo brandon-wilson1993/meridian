@@ -21,4 +21,21 @@ public class UsersGetAllUsersIntegrationTests extends BaseTest {
                 .body("find() { it.id == 2 }.lastName", equalTo("Seuss"))
                 .body("find() { it.id == 3 }.lastName", equalTo("Rowling"));
     }
+
+    @Test
+    void getAllUsers_withoutAuthorizationHeader_returns401() {
+        Response response = RestAssured.given()
+                .get("/users");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void getAllUsers_withInvalidToken_returns401() {
+        Response response = RestAssured.given()
+                .header("Authorization", "Bearer invalid.token.here")
+                .get("/users");
+
+        response.then().statusCode(401);
+    }
 }

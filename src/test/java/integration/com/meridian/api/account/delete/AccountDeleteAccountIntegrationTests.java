@@ -39,4 +39,21 @@ public class AccountDeleteAccountIntegrationTests extends BaseTest {
 
         response.then().statusCode(200);
     }
+
+    @Test
+    void deleteAccount_withoutAuthorizationHeader_returns401() {
+        Response response = RestAssured.given()
+                .delete("/accounts/1");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void deleteAccount_withInvalidToken_returns401() {
+        Response response = RestAssured.given()
+                .header("Authorization", "Bearer invalid.token.here")
+                .delete("/accounts/1");
+
+        response.then().statusCode(401);
+    }
 }
