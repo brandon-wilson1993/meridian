@@ -42,13 +42,13 @@ public class GlobalExceptionHandlerTests {
     void globalExceptionHandler_handleJwtAuthenticationException() {
 
         JwtAuthenticationException jwtException =
-                new JwtAuthenticationException("Authentication failed");
+                new JwtAuthenticationException("Invalid JWT token");
 
         ResponseEntity<ErrorResponse> responseEntity =
                 globalExceptionHandler.handleJwtAuthenticationException(jwtException);
 
         assertEquals("Unauthorized", responseEntity.getBody().getError());
-        assertEquals("Authentication failed", responseEntity.getBody().getMessage());
+        assertEquals("Invalid JWT token", responseEntity.getBody().getMessage());
         assertEquals(401, responseEntity.getBody().getStatus());
     }
 
