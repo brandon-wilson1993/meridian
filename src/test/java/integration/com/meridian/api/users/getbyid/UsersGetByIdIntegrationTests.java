@@ -13,6 +13,7 @@ public class UsersGetByIdIntegrationTests extends BaseTest {
     void getByIdReturns200StatusCode() {
 
         Response response = RestAssured.given()
+                .header("Authorization", "Bearer " + jwtToken)
                 .get("/users/1");
 
         response.then().statusCode(200).and()
@@ -25,6 +26,7 @@ public class UsersGetByIdIntegrationTests extends BaseTest {
     void getByIdReturns404StatusCodeWhenAuthorNotFound() {
 
         Response response = RestAssured.given()
+                .header("Authorization", "Bearer " + jwtToken)
                 .get("/users/9999");
 
         response.then().statusCode(404).and()

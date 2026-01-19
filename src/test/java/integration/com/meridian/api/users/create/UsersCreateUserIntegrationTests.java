@@ -23,7 +23,11 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
     @Test
     void createUserReturns201StatusCode() {
 
-        Response response = RestAssured.given().contentType(ContentType.JSON).body(body).post("/users");
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
+                .body(body)
+                .post("/users");
 
         response.then().statusCode(201).and()
                 .body("firstName", equalTo("Testing"))

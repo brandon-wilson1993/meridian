@@ -13,6 +13,7 @@ public class UsersGetAllUsersIntegrationTests extends BaseTest {
     void getAllAuthorsReturns200StatusCode() {
 
         Response response = RestAssured.given()
+                .header("Authorization", "Bearer " + jwtToken)
                 .get("/users");
 
         response.then().statusCode(200).and()

@@ -24,7 +24,11 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
                 }
                 """;
 
-        Response response = RestAssured.given().contentType(ContentType.JSON).body(body).post("/users");
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
+                .body(body)
+                .post("/users");
 
         id = response.then().extract().jsonPath().getString("id");
     }
@@ -40,7 +44,11 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
                 }
                 """;
 
-        Response response = RestAssured.given().contentType(ContentType.JSON).body(body).put("/users/" + id);
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
+                .body(body)
+                .put("/users/" + id);
 
         response.then().statusCode(200).and()
                 .body("id", equalTo(Integer.parseInt(id)))

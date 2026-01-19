@@ -26,7 +26,7 @@ public class AccountUpdateAccountIntegrationTests extends BaseTest {
     @Test
     void updateAccountReturns200StatusCode() {
 
-        Response response = RestAssuredHelpers.requestHelper("/accounts/" + testDataService.getCheckingAccountId(), RequestType.PUT, body);
+        Response response = RestAssuredHelpers.requestHelper("/accounts/" + testDataService.getCheckingAccountId(), RequestType.PUT, body, jwtToken);
 
         response.then().statusCode(200).and()
                 .body("id", equalTo(testDataService.getCheckingAccountId().intValue()))
@@ -36,7 +36,7 @@ public class AccountUpdateAccountIntegrationTests extends BaseTest {
     @Test
     void updateAccountReturns404StatusCodeInvalidAccountId() {
 
-        Response response = RestAssuredHelpers.requestHelper("/accounts/9999", RequestType.PUT, body);
+        Response response = RestAssuredHelpers.requestHelper("/accounts/9999", RequestType.PUT, body, jwtToken);
 
         response.then().statusCode(404).and()
                 .body("message", equalTo("Account with id 9999 not found"));

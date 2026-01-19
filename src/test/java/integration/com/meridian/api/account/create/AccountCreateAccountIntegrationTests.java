@@ -22,6 +22,7 @@ public class AccountCreateAccountIntegrationTests extends BaseTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
                 .body(body)
                 .post("/users/1/accounts");
 
@@ -34,6 +35,7 @@ public class AccountCreateAccountIntegrationTests extends BaseTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
                 .body(body)
                 .post("/users/999/accounts");
 

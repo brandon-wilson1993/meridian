@@ -20,7 +20,7 @@ public class AccountGetAccountsIntegrationTests extends BaseTest {
     @Test
     void getAccountsReturns200StatusCode() {
 
-        Response response = RestAssuredHelpers.requestHelper("/users/" + testDataService.getUserId() + "/accounts", RequestType.GET);
+        Response response = RestAssuredHelpers.requestHelper("/users/" + testDataService.getUserId() + "/accounts", RequestType.GET, "", jwtToken);
 
         response.then().statusCode(200).and()
                 .body(String.format("find() { it.id == %s }.accountType", testDataService.getCheckingAccountId()), equalTo("CHECKING"))
@@ -31,7 +31,7 @@ public class AccountGetAccountsIntegrationTests extends BaseTest {
     @Test
     void getAccountsReturns200StatusCodeInvalidUserId() {
 
-        Response response = RestAssuredHelpers.requestHelper("/users/9999/accounts", RequestType.GET);
+        Response response = RestAssuredHelpers.requestHelper("/users/9999/accounts", RequestType.GET, "", jwtToken);
 
         response.then().statusCode(404).and()
                 .body("message", equalTo("No user found with id 9999"));
