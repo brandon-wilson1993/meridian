@@ -7,10 +7,13 @@ import static org.mockito.Mockito.when;
 import com.meridian.api.errors.ErrorResponse;
 import com.meridian.api.errors.GlobalExceptionHandler;
 import com.meridian.api.errors.ResourceNotFoundException;
+import com.meridian.security.JwtAuthenticationException;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,6 +36,48 @@ public class GlobalExceptionHandlerTests {
         assertEquals("Not Found", responseEntity.getBody().getError());
         assertEquals("Testing message", responseEntity.getBody().getMessage());
         assertEquals(404, responseEntity.getBody().getStatus());
+    }
+
+    @Test
+    void globalExceptionHandler_handleJwtAuthenticationException() {
+
+        JwtAuthenticationException jwtException =
+                new JwtAuthenticationException("Invalid JWT token");
+
+        ResponseEntity<ErrorResponse> responseEntity =
+                globalExceptionHandler.handleJwtAuthenticationException(jwtException);
+
+        assertEquals("Unauthorized", responseEntity.getBody().getError());
+        assertEquals("Invalid JWT token", responseEntity.getBody().getMessage());
+        assertEquals(401, responseEntity.getBody().getStatus());
+    }
+
+    @Test
+    void globalExceptionHandler_handleAuthenticationException() {
+
+        AuthenticationException authException = mock(AuthenticationException.class);
+        when(authException.getMessage()).thenReturn("Authentication failed");
+
+        ResponseEntity<ErrorResponse> responseEntity =
+                globalExceptionHandler.handleAuthenticationException(authException);
+
+        assertEquals("Unauthorized", responseEntity.getBody().getError());
+        assertEquals("Authentication failed", responseEntity.getBody().getMessage());
+        assertEquals(401, responseEntity.getBody().getStatus());
+    }
+
+    @Test
+    void globalExceptionHandler_handleAccessDeniedException() {
+
+        AccessDeniedException accessDeniedException =
+                new AccessDeniedException("Access is denied");
+
+        ResponseEntity<ErrorResponse> responseEntity =
+                globalExceptionHandler.handleAccessDeniedException(accessDeniedException);
+
+        assertEquals("Forbidden", responseEntity.getBody().getError());
+        assertEquals("Access is denied", responseEntity.getBody().getMessage());
+        assertEquals(403, responseEntity.getBody().getStatus());
     }
 
     @Test
