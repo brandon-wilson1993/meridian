@@ -69,7 +69,7 @@ public class JwtTokenProvider {
             // Unsupported JWT token
             return false;
         } catch (IllegalArgumentException e) {
-            // JWT token compact of handler are invalid
+            // JWT token compact or handler are invalid
             return false;
         } catch (Exception e) {
             return false;

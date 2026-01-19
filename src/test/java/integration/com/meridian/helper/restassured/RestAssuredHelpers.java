@@ -26,7 +26,7 @@ public class RestAssuredHelpers {
 
         RequestSpecification requestSpecification = RestAssured.given().contentType(ContentType.JSON);
 
-        if(jwtToken != null && !jwtToken.isEmpty()) {
+        if (jwtToken != null && !jwtToken.isEmpty()) {
             requestSpecification.header("Authorization", "Bearer " + jwtToken);
         }
 
