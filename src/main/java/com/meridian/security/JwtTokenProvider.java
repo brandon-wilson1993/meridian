@@ -36,13 +36,17 @@ public class JwtTokenProvider {
     }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
 
-        return claims.getSubject();
+            return claims.getSubject();
+        } catch (Exception e) {
+            throw new JwtAuthenticationException("Failed to extract username from token", e);
+        }
     }
 
     public boolean validateToken(String token) {
@@ -52,6 +56,21 @@ public class JwtTokenProvider {
                     .build()
                     .parseSignedClaims(token);
             return true;
+        } catch (io.jsonwebtoken.security.SecurityException e) {
+            // Invalid JWT signature
+            return false;
+        } catch (io.jsonwebtoken.MalformedJwtException e) {
+            // Invalid JWT token
+            return false;
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            // Expired JWT token
+            return false;
+        } catch (io.jsonwebtoken.UnsupportedJwtException e) {
+            // Unsupported JWT token
+            return false;
+        } catch (IllegalArgumentException e) {
+            // JWT token compact of handler are invalid
+            return false;
         } catch (Exception e) {
             return false;
         }
