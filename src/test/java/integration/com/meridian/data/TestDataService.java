@@ -1,8 +1,10 @@
 package integration.com.meridian.data;
 
 import com.meridian.api.account.AccountType;
+import integration.com.meridian.helper.jwt.JwtTestHelper;
 import integration.com.meridian.helper.restassured.RequestType;
 import integration.com.meridian.helper.restassured.RestAssuredHelpers;
+import io.restassured.response.Response;
 
 public class TestDataService {
 
@@ -11,10 +13,11 @@ public class TestDataService {
     private Long savingAccountId;
     private Long tradingAccountId;
     private Long userId;
+    private String jwtToken;
 
     public TestDataService() {
 
-        System.out.println("Test Data Service constructor");
+        this.jwtToken = JwtTestHelper.generateTestToken();
     }
 
     public Long getCheckingAccountId() {
@@ -37,13 +40,14 @@ public class TestDataService {
         return userId;
     }
 
-    public void basicDataCreation() {
+    public void basicDataCreation(String username) {
 
-        userId = RestAssuredHelpers.requestHelper("/users", RequestType.POST, TestDataServiceBody.CREATE_USER.getBody()).then().extract().jsonPath().getLong("id");
+        Response response = RestAssuredHelpers.requestHelper("/users", RequestType.POST, TestDataServiceBody.CREATE_USER.getBody(username), jwtToken);
+        userId = response.then().extract().jsonPath().getLong("id");
 
-        checkingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_CHECKING.getBody()).then().extract().jsonPath().getLong("id");
-        creditAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_CREDIT.getBody()).then().extract().jsonPath().getLong("id");
-        savingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_SAVINGS.getBody()).then().extract().jsonPath().getLong("id");
-        tradingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_TRADING.getBody()).then().extract().jsonPath().getLong("id");
+        checkingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_CHECKING.getBody(), jwtToken).then().extract().jsonPath().getLong("id");
+        creditAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_CREDIT.getBody(), jwtToken).then().extract().jsonPath().getLong("id");
+        savingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_SAVINGS.getBody(), jwtToken).then().extract().jsonPath().getLong("id");
+        tradingAccountId = RestAssuredHelpers.requestHelper("/users/" + userId + "/accounts", RequestType.POST, TestDataServiceBody.CREATE_ACCOUNT_TRADING.getBody(), jwtToken).then().extract().jsonPath().getLong("id");
     }
 }

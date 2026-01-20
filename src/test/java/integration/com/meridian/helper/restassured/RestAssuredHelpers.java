@@ -7,21 +7,30 @@ import io.restassured.specification.RequestSpecification;
 
 public class RestAssuredHelpers {
 
-    public static Response requestHelper(String uri, RequestType requestType) {
+    public static Response requestHelper(String uri, String jwtToken, RequestType requestType) {
 
-        return requestHelperInternal(uri, requestType, "");
+        return requestHelperInternal(uri, requestType, "", jwtToken);
     }
 
     public static Response requestHelper(String uri, RequestType requestType, String body) {
 
-        return requestHelperInternal(uri, requestType, body);
+        return requestHelperInternal(uri, requestType, body, null);
     }
 
-    private static Response requestHelperInternal(String uri, RequestType requestType, String body) {
+    public static Response requestHelper(String uri, RequestType requestType, String body, String jwtToken) {
+
+        return requestHelperInternal(uri, requestType, body, jwtToken);
+    }
+
+    private static Response requestHelperInternal(String uri, RequestType requestType, String body, String jwtToken) {
 
         RequestSpecification requestSpecification = RestAssured.given().contentType(ContentType.JSON);
 
-        if(!body.isEmpty()) {
+        if (jwtToken != null && !jwtToken.isEmpty()) {
+            requestSpecification.header("Authorization", "Bearer " + jwtToken);
+        }
+
+        if (!body.isEmpty()) {
 
             requestSpecification.body(body);
         }

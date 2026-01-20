@@ -9,6 +9,13 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.6</version>
+        <relativePath/>
+    </parent>
+
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -40,6 +47,28 @@
             <version>3.5.6</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>3.5.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.38</version>
@@ -60,6 +89,12 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>3.5.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -174,6 +209,8 @@
                             <excludes>
                                 <exclude>com/meridian/application/*</exclude>
                                 <exclude>com/meridian/api/account/AccountTypeValidator.class</exclude>
+                                <exclude>com/meridian/security/SecurityConfig.class</exclude>
+                                <exclude>com/meridian/security/JwtAuthenticationException.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>

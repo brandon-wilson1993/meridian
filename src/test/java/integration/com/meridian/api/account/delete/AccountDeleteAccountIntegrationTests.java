@@ -23,6 +23,7 @@ public class AccountDeleteAccountIntegrationTests extends BaseTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
                 .body(body)
                 .post("/users/1/accounts");
 
@@ -33,8 +34,26 @@ public class AccountDeleteAccountIntegrationTests extends BaseTest {
     void deleteAccountReturns200StatusCode() {
 
         Response response = RestAssured.given()
+                .header("Authorization", "Bearer " + jwtToken)
                 .delete("/accounts/" + id);
 
         response.then().statusCode(200);
+    }
+
+    @Test
+    void deleteAccount_withoutAuthorizationHeader_returns401() {
+        Response response = RestAssured.given()
+                .delete("/accounts/1");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void deleteAccount_withInvalidToken_returns401() {
+        Response response = RestAssured.given()
+                .header("Authorization", "Bearer invalid.token.here")
+                .delete("/accounts/1");
+
+        response.then().statusCode(401);
     }
 }

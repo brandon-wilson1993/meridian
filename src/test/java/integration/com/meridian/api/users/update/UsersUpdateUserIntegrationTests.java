@@ -4,6 +4,7 @@ import integration.com.meridian.base.BaseTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,11 +21,16 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
                 """
                 {
                       "firstName": "Update",
-                      "lastName": "Name"
+                      "lastName": "Name",
+                      "username": "%s"
                 }
-                """;
+                """.formatted(RandomStringUtils.randomAlphabetic(8));
 
-        Response response = RestAssured.given().contentType(ContentType.JSON).body(body).post("/users");
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
+                .body(body)
+                .post("/users");
 
         id = response.then().extract().jsonPath().getString("id");
     }
@@ -32,19 +38,64 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
     @Test
     void updateUserReturns200StatusCode() {
 
+        String username = RandomStringUtils.randomAlphabetic(8);
+
         String body =
                 """
                 {
                       "firstName": "Updated",
-                      "lastName": "Name2"
+                      "lastName": "Name2",
+                      "username": "%s"
                 }
-                """;
+                """.formatted(username);
 
-        Response response = RestAssured.given().contentType(ContentType.JSON).body(body).put("/users/" + id);
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
+                .body(body)
+                .put("/users/" + id);
 
         response.then().statusCode(200).and()
                 .body("id", equalTo(Integer.parseInt(id)))
                 .body("firstName", equalTo("Updated"))
-                .body("lastName", equalTo("Name2"));
+                .body("lastName", equalTo("Name2"))
+                .body("username", equalTo(username));
+    }
+
+    @Test
+    void updateUser_withoutAuthorizationHeader_returns401() {
+        String body =
+                """
+                {
+                      "firstName": "Updated",
+                      "lastName": "Name"
+                }
+                """;
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(body)
+                .put("/users/1");
+
+        response.then().statusCode(401);
+    }
+
+    @Test
+    void updateUser_withInvalidToken_returns401() {
+        String body =
+                """
+                {
+                      "firstName": "Updated",
+                      "lastName": "Name"
+                }
+                """;
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer invalid.token.here")
+                .body(body)
+                .put("/users/1");
+
+        response.then().statusCode(401);
     }
 }

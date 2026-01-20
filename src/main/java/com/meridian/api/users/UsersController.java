@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class UsersController {
     private UsersService usersService;
 
     // TODO: only allowed in dev environments
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/users")
     public ResponseEntity<UsersDTO> createUser(@Valid @RequestBody UsersDTO newAuthor) {
 
@@ -24,6 +26,7 @@ public class UsersController {
     }
 
     // TODO: only allowed in dev environments
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/users/{id}")
     public ResponseEntity<UsersDTO> deleteUserById(@PathVariable("id") Long id) {
 
@@ -32,12 +35,14 @@ public class UsersController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/users")
     public ResponseEntity<List<UsersDTO>> getAllUsers() {
 
         return new ResponseEntity<>(usersService.getAllUsers(), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/users/{id}")
     public ResponseEntity<UsersDTO> getUserById(@PathVariable("id") Long id) {
 
@@ -47,6 +52,7 @@ public class UsersController {
     }
 
     // TODO: only allowed in dev environments
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/users/{id}")
     public ResponseEntity<UsersDTO> updateUser(
             @Valid @RequestBody UsersDTO usersDTO, @PathVariable("id") Long id) {

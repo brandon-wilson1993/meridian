@@ -4,6 +4,7 @@ CREATE TABLE users (
     user_id BIGINT DEFAULT nextval('idx_seq') PRIMARY KEY,
     first_name VARCHAR NOT NULL,
     last_name VARCHAR NOT NULL,
+    username VARCHAR NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );

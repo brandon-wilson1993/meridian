@@ -15,6 +15,9 @@ public class UsersDTO {
     @NotBlank(message = "lastName is required")
     private String lastName;
 
+    @NotNull(message = "username is required")
+    private String username;
+
     public String getFirstName() {
         return firstName;
     }
@@ -37,5 +40,13 @@ public class UsersDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
