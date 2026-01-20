@@ -1,8 +1,12 @@
 package com.meridian.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -56,16 +60,16 @@ public class JwtTokenProvider {
                     .build()
                     .parseSignedClaims(token);
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException e) {
+        } catch (SecurityException e) {
             // Invalid JWT signature
             return false;
-        } catch (io.jsonwebtoken.MalformedJwtException e) {
+        } catch (MalformedJwtException e) {
             // Invalid JWT token
             return false;
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) {
             // Expired JWT token
             return false;
-        } catch (io.jsonwebtoken.UnsupportedJwtException e) {
+        } catch (UnsupportedJwtException e) {
             // Unsupported JWT token
             return false;
         } catch (IllegalArgumentException e) {

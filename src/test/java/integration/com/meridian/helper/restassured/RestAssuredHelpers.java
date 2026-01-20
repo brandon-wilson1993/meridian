@@ -30,7 +30,7 @@ public class RestAssuredHelpers {
             requestSpecification.header("Authorization", "Bearer " + jwtToken);
         }
 
-        if(!body.isEmpty()) {
+        if (!body.isEmpty()) {
 
             requestSpecification.body(body);
         }
