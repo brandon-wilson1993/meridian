@@ -6,8 +6,11 @@ import integration.com.meridian.helper.restassured.RestAssuredHelpers;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -22,7 +25,7 @@ public class AccountUpdateAccountIntegrationTests extends BaseTest {
     @BeforeAll
     static void dataSetup() {
 
-        testDataService.basicDataCreation();
+        testDataService.basicDataCreation(UUID.randomUUID().toString());
     }
 
     @Test

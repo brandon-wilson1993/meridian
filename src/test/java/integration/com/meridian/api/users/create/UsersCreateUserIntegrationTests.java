@@ -7,7 +7,10 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+
+import java.util.Random;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -17,9 +20,10 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
                                 """
                                 {
                                 	"firstName": "Testing",
-                                	"lastName": "Name"
+                                	"lastName": "Name",
+                                	"username": "%s"
                                 }
-                                """;
+                                """.formatted(RandomStringUtils.randomAlphabetic(8));
 
     @Test
     void createUserReturns201StatusCode() {
@@ -37,6 +41,7 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
 
     @Test
     void createUser_withoutAuthorizationHeader_returns401() {
+
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(body)
@@ -47,6 +52,7 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
 
     @Test
     void createUser_withInvalidToken_returns401() {
+
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer invalid.token.here")
@@ -58,6 +64,7 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
 
     @Test
     void createUser_withExpiredToken_returns401() {
+
         String expiredToken = JwtTokenHelper.generateExpiredToken();
 
         Response response = RestAssured.given()

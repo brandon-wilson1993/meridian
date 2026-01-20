@@ -1,5 +1,9 @@
 package integration.com.meridian.data;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.UUID;
+
 public enum TestDataServiceBody {
 
     CREATE_ACCOUNT_CHECKING("""
@@ -25,7 +29,8 @@ public enum TestDataServiceBody {
     CREATE_USER("""
             {
             	"firstName": "Testing",
-            	"lastName": "Name"
+            	"lastName": "Name",
+            	"username": "%s"
             }
             """);
 
@@ -37,5 +42,9 @@ public enum TestDataServiceBody {
 
     public String getBody() {
         return body;
+    }
+
+    public String getBody(String stringToAdd) {
+        return body.formatted(stringToAdd);
     }
 }

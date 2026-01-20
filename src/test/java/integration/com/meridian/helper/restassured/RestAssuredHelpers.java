@@ -7,9 +7,9 @@ import io.restassured.specification.RequestSpecification;
 
 public class RestAssuredHelpers {
 
-    public static Response requestHelper(String uri, RequestType requestType) {
+    public static Response requestHelper(String uri, String jwtToken, RequestType requestType) {
 
-        return requestHelperInternal(uri, requestType, "", null);
+        return requestHelperInternal(uri, requestType, "", jwtToken);
     }
 
     public static Response requestHelper(String uri, RequestType requestType, String body) {

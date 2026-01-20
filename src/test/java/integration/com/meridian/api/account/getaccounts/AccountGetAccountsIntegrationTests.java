@@ -5,8 +5,11 @@ import integration.com.meridian.helper.restassured.RequestType;
 import integration.com.meridian.helper.restassured.RestAssuredHelpers;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -15,13 +18,13 @@ public class AccountGetAccountsIntegrationTests extends BaseTest {
     @BeforeAll
     static void dataSetup() {
 
-        testDataService.basicDataCreation();
+        testDataService.basicDataCreation(UUID.randomUUID().toString());
     }
 
     @Test
     void getAccountsReturns200StatusCode() {
 
-        Response response = RestAssuredHelpers.requestHelper("/users/" + testDataService.getUserId() + "/accounts", RequestType.GET, "", jwtToken);
+        Response response = RestAssuredHelpers.requestHelper("/users/" + testDataService.getUserId() + "/accounts", jwtToken, RequestType.GET);
 
         response.then().statusCode(200).and()
                 .body(String.format("find() { it.id == %s }.accountType", testDataService.getCheckingAccountId()), equalTo("CHECKING"))
@@ -32,7 +35,7 @@ public class AccountGetAccountsIntegrationTests extends BaseTest {
     @Test
     void getAccountsReturns200StatusCodeInvalidUserId() {
 
-        Response response = RestAssuredHelpers.requestHelper("/users/9999/accounts", RequestType.GET, "", jwtToken);
+        Response response = RestAssuredHelpers.requestHelper("/users/9999/accounts", jwtToken, RequestType.GET);
 
         response.then().statusCode(404).and()
                 .body("message", equalTo("No user found with id 9999"));

@@ -4,6 +4,7 @@ import integration.com.meridian.base.BaseTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,9 +20,10 @@ public class UsersDeleteUserIntegrationTests extends BaseTest {
                 """
                 {
                       "firstName": "Delete",
-                      "lastName": "Name"
+                      "lastName": "Name",
+                      "username": "%s"
                 }
-                """;
+                """.formatted(RandomStringUtils.randomAlphabetic(8));
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)

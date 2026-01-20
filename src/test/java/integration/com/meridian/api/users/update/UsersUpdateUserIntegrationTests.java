@@ -4,6 +4,7 @@ import integration.com.meridian.base.BaseTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,9 +21,10 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
                 """
                 {
                       "firstName": "Update",
-                      "lastName": "Name"
+                      "lastName": "Name",
+                      "username": "%s"
                 }
-                """;
+                """.formatted(RandomStringUtils.randomAlphabetic(8));
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -36,13 +38,16 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
     @Test
     void updateUserReturns200StatusCode() {
 
+        String username = RandomStringUtils.randomAlphabetic(8);
+
         String body =
                 """
                 {
                       "firstName": "Updated",
-                      "lastName": "Name2"
+                      "lastName": "Name2",
+                      "username": "%s"
                 }
-                """;
+                """.formatted(username);
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -53,7 +58,8 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
         response.then().statusCode(200).and()
                 .body("id", equalTo(Integer.parseInt(id)))
                 .body("firstName", equalTo("Updated"))
-                .body("lastName", equalTo("Name2"));
+                .body("lastName", equalTo("Name2"))
+                .body("username", equalTo(username));
     }
 
     @Test
