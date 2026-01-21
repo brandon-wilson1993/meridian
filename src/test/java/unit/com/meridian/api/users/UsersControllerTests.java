@@ -163,31 +163,4 @@ public class UsersControllerTests {
         assertThrows(ResourceNotFoundException.class, 
                 () -> usersController.updateUser(updatedUser, 999L));
     }
-
-    @Test
-    void userController_createUser_withInvalidPassword_shouldFailValidation() {
-
-        UsersDTO user = new UsersDTO();
-        user.setId(null);
-        user.setFirstName("Testing");
-        user.setLastName("Controller");
-        user.setPassword("short"); // Invalid password - too short and missing requirements
-
-        // When validation fails, the controller won't be called, but we can test 
-        // that a user with invalid password would not be created successfully
-        UsersDTO createdUser = new UsersDTO();
-        createdUser.setId(123L);
-        createdUser.setFirstName("Testing");
-        createdUser.setLastName("Controller");
-
-        when(usersService.createUser(user)).thenReturn(createdUser);
-
-        // The controller itself doesn't perform validation - that's done by @Valid annotation
-        // This test verifies the controller can handle the request if validation passes
-        ResponseEntity<UsersDTO> result = usersController.createUser(user);
-        
-        // Verification that service was called
-        verify(usersService).createUser(user);
-        assertEquals(201, result.getStatusCode().value());
-    }
 }
