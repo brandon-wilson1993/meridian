@@ -33,6 +33,7 @@ public class UsersControllerTests {
         user.setId(null);
         user.setFirstName("Testing");
         user.setLastName("Controller");
+        user.setPassword("Password123!");
 
         UsersDTO createdUser = new UsersDTO();
         createdUser.setId(123L);
@@ -105,6 +106,7 @@ public class UsersControllerTests {
         returnedUser.setId(123L);
         returnedUser.setFirstName("Different");
         returnedUser.setLastName("Name");
+        returnedUser.setPassword("NewPassword123!");
 
         when(usersService.updateUser(returnedUser, 123L)).thenReturn(returnedUser);
 
@@ -153,6 +155,7 @@ public class UsersControllerTests {
         UsersDTO updatedUser = new UsersDTO();
         updatedUser.setFirstName("Updated");
         updatedUser.setLastName("Name");
+        updatedUser.setPassword("NewPassword123!");
 
         when(usersService.updateUser(updatedUser, 999L))
                 .thenThrow(new ResourceNotFoundException("User with id 999 not found"));

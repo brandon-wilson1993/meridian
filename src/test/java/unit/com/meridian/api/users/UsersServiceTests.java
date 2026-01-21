@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +31,9 @@ public class UsersServiceTests {
     @Mock
     private ModelMapper modelMapper;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UsersService usersService = new UsersServiceImpl();
 
@@ -40,16 +44,19 @@ public class UsersServiceTests {
         users.setId(123L);
         users.setFirstName("Testing");
         users.setLastName("Name");
+        users.setPassword("$2a$10$hashedPassword");
 
         usersDTO = new UsersDTO();
         usersDTO.setId(123L);
         usersDTO.setFirstName("Testing");
         usersDTO.setLastName("Name");
+        usersDTO.setPassword("Password123!");
     }
 
     @Test
     void createUsers_shouldCreate_whenusersDTOIsValid() {
 
+        when(passwordEncoder.encode(any(String.class))).thenReturn("$2a$10$hashedPassword");
         when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(usersDTO);
         when(modelMapper.map(any(UsersDTO.class), eq(Users.class))).thenReturn(users);
         when(usersRepository.save(any(Users.class))).thenReturn(users);
@@ -60,6 +67,7 @@ public class UsersServiceTests {
         assertEquals("Testing", result.getFirstName());
         assertEquals("Name", result.getLastName());
 
+        verify(passwordEncoder).encode(any(String.class));
         verify(usersRepository).save(users);
     }
 
@@ -90,11 +98,13 @@ public class UsersServiceTests {
         users1.setId(456L);
         users1.setFirstName("Testing");
         users1.setLastName("Another");
+        users1.setPassword("$2a$10$hashedPassword1");
 
         Users users2 = new Users();
         users2.setId(789L);
         users2.setFirstName("Test");
         users2.setLastName("Name");
+        users2.setPassword("$2a$10$hashedPassword2");
 
         List<Users> users = Arrays.asList(users1, users2);
 
@@ -148,12 +158,15 @@ public class UsersServiceTests {
         update.setId(123L);
         update.setFirstName("Update");
         update.setLastName("Name");
+        update.setPassword("$2a$10$newHashedPassword");
 
         UsersDTO updatedDTO = new UsersDTO();
         updatedDTO.setId(123L);
         updatedDTO.setFirstName("Update");
         updatedDTO.setLastName("Name");
+        updatedDTO.setPassword("NewPassword123!");
 
+        when(passwordEncoder.encode(any(String.class))).thenReturn("$2a$10$newHashedPassword");
         when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(updatedDTO);
         when(usersRepository.findById(123L)).thenReturn(Optional.of(users));
         when(usersRepository.save(any(Users.class))).thenReturn(update);
@@ -165,6 +178,7 @@ public class UsersServiceTests {
         assertEquals("Name", result.getLastName());
 
         verify(usersRepository).findById(123L);
+        verify(passwordEncoder).encode(any(String.class));
         verify(usersRepository).save(any(Users.class)); // object changes in lamba function in service
     }
 

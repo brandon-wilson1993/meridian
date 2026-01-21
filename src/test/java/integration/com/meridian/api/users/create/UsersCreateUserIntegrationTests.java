@@ -21,7 +21,8 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
                                 {
                                 	"firstName": "Testing",
                                 	"lastName": "Name",
-                                	"username": "%s"
+                                	"username": "%s",
+                                	"password": "TestPass123!"
                                 }
                                 """.formatted(RandomStringUtils.randomAlphabetic(8));
 
@@ -74,5 +75,68 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
                 .post("/users");
 
         response.then().statusCode(401);
+    }
+
+    @Test
+    void createUser_withInvalidPassword_returns400() {
+
+        String invalidPasswordBody = """
+                {
+                    "firstName": "Testing",
+                    "lastName": "Name",
+                    "username": "%s",
+                    "password": "short"
+                }
+                """.formatted(RandomStringUtils.randomAlphabetic(8));
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
+                .body(invalidPasswordBody)
+                .post("/users");
+
+        response.then().statusCode(400);
+    }
+
+    @Test
+    void createUser_withPasswordMissingUppercase_returns400() {
+
+        String invalidPasswordBody = """
+                {
+                    "firstName": "Testing",
+                    "lastName": "Name",
+                    "username": "%s",
+                    "password": "testpass123!"
+                }
+                """.formatted(RandomStringUtils.randomAlphabetic(8));
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
+                .body(invalidPasswordBody)
+                .post("/users");
+
+        response.then().statusCode(400);
+    }
+
+    @Test
+    void createUser_withPasswordMissingSpecialChar_returns400() {
+
+        String invalidPasswordBody = """
+                {
+                    "firstName": "Testing",
+                    "lastName": "Name",
+                    "username": "%s",
+                    "password": "TestPass123"
+                }
+                """.formatted(RandomStringUtils.randomAlphabetic(8));
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
+                .body(invalidPasswordBody)
+                .post("/users");
+
+        response.then().statusCode(400);
     }
 }
