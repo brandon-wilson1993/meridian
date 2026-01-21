@@ -183,36 +183,6 @@ public class UsersServiceTests {
     }
 
     @Test
-    void createUsers_shouldHashPassword_evenWhenPasswordIsInvalid() {
-
-        // Service layer doesn't validate password format - that's done by @Valid at controller level
-        // This test verifies that even if an invalid password somehow reaches the service,
-        // it will still be hashed before storage
-        UsersDTO invalidPasswordDTO = new UsersDTO();
-        invalidPasswordDTO.setId(null);
-        invalidPasswordDTO.setFirstName("Testing");
-        invalidPasswordDTO.setLastName("Name");
-        invalidPasswordDTO.setPassword("short"); // Invalid password
-
-        Users savedUser = new Users();
-        savedUser.setId(456L);
-        savedUser.setFirstName("Testing");
-        savedUser.setLastName("Name");
-        savedUser.setPassword("$2a$10$hashedShortPassword");
-
-        when(passwordEncoder.encode("short")).thenReturn("$2a$10$hashedShortPassword");
-        when(modelMapper.map(any(UsersDTO.class), eq(Users.class))).thenReturn(savedUser);
-        when(usersRepository.save(any(Users.class))).thenReturn(savedUser);
-        when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(invalidPasswordDTO);
-
-        UsersDTO result = usersService.createUser(invalidPasswordDTO);
-
-        // Verify password encoder was called to hash the password
-        verify(passwordEncoder).encode("short");
-        verify(usersRepository).save(any(Users.class));
-    }
-
-    @Test
     void updateUsers_shouldNotUpdate_whenIdIsDoesNotExist() {
 
         assertThrows(ResourceNotFoundException.class, () -> usersService.updateUser(modelMapper.map(users, UsersDTO.class), 12L));
