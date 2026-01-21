@@ -24,13 +24,15 @@ public class UsersServiceImpl implements UsersService {
 
     public UsersDTO createUser(UsersDTO usersDTO) {
 
+        // Map DTO to entity
+        Users users = modelMapper.map(usersDTO, Users.class);
+        
         // Hash the password before saving
-        String hashedPassword = passwordEncoder.encode(usersDTO.getPassword());
-        usersDTO.setPassword(hashedPassword);
+        users.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
 
-        Users users = usersRepository.save(modelMapper.map(usersDTO, Users.class));
-
-        return modelMapper.map(users, UsersDTO.class);
+        // Save and return
+        Users savedUser = usersRepository.save(users);
+        return modelMapper.map(savedUser, UsersDTO.class);
     }
 
     public void deleteUserById(Long id) {
@@ -80,7 +82,6 @@ public class UsersServiceImpl implements UsersService {
                                 user.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
                             }
                             Users savedUser = usersRepository.save(user);
-                            System.out.println("Updated User: " + savedUser);
                             return modelMapper.map(savedUser, UsersDTO.class);
                         })
                 .orElseThrow(

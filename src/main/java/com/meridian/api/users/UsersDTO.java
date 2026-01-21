@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UsersDTO {
 
+    public static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
+    public static final String PASSWORD_MESSAGE = "Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character";
+
     private Long id;
 
     @NotNull(message = "firstName is required")
@@ -21,10 +24,7 @@ public class UsersDTO {
     private String username;
 
     @NotNull(message = "password is required")
-    @Pattern(
-        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$",
-        message = "Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character"
-    )
+    @Pattern(regexp = PASSWORD_PATTERN, message = PASSWORD_MESSAGE)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
