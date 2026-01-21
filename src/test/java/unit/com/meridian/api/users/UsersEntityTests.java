@@ -14,11 +14,13 @@ public class UsersEntityTests {
         user.setId(1L);
         user.setFirstName("John");
         user.setLastName("Doe");
+        user.setUsername("johndoe");
         user.setPassword("hashedPassword123");
 
         assertEquals(1L, user.getId());
         assertEquals("John", user.getFirstName());
         assertEquals("Doe", user.getLastName());
+        assertEquals("johndoe", user.getUsername());
         assertEquals("hashedPassword123", user.getPassword());
     }
 }
