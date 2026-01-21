@@ -3,6 +3,7 @@ package com.meridian.api.users;
 import com.meridian.api.errors.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,14 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public UsersDTO createUser(UsersDTO usersDTO) {
+
+        // Hash the password before saving
+        String hashedPassword = passwordEncoder.encode(usersDTO.getPassword());
+        usersDTO.setPassword(hashedPassword);
 
         Users users = usersRepository.save(modelMapper.map(usersDTO, Users.class));
 
@@ -67,6 +75,10 @@ public class UsersServiceImpl implements UsersService {
                             user.setFirstName(usersDTO.getFirstName());
                             user.setLastName(usersDTO.getLastName());
                             user.setUsername(usersDTO.getUsername());
+                            // Hash the password if it's being updated
+                            if (usersDTO.getPassword() != null && !usersDTO.getPassword().isEmpty()) {
+                                user.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
+                            }
                             Users savedUser = usersRepository.save(user);
                             System.out.println("Updated User: " + savedUser);
                             return modelMapper.map(savedUser, UsersDTO.class);
