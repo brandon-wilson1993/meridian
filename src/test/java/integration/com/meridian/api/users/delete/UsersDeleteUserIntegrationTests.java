@@ -21,7 +21,8 @@ public class UsersDeleteUserIntegrationTests extends BaseTest {
                 {
                       "firstName": "Delete",
                       "lastName": "Name",
-                      "username": "%s"
+                      "username": "%s",
+                        "password": "DeletePass123!"
                 }
                 """.formatted(RandomStringUtils.randomAlphabetic(8));
 

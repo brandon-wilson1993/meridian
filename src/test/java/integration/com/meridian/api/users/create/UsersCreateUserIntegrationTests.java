@@ -96,7 +96,7 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
                 .post("/users");
 
         response.then().statusCode(400)
-                .body("password", equalTo("Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character"));
+                .body("error", equalTo("Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character"));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
                 .post("/users");
 
         response.then().statusCode(400)
-                .body("password", equalTo("Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character"));
+                .body("error", equalTo("Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character"));
     }
 
     @Test
@@ -140,6 +140,6 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
                 .post("/users");
 
         response.then().statusCode(400)
-                .body("password", equalTo("Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character"));
+                .body("error", equalTo("Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character"));
     }
 }
