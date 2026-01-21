@@ -183,9 +183,53 @@ public class UsersServiceTests {
     }
 
     @Test
-    void updateUsers_shouldNotUpdate_whenIdIsDoesNotExist() {
+    void updateUsers_shouldNotEncodePassword_whenPasswordNotProvided() {
 
-        assertThrows(ResourceNotFoundException.class, () -> usersService.updateUser(modelMapper.map(users, UsersDTO.class), 12L));
+        Users existing = new Users();
+        existing.setId(123L);
+        existing.setFirstName("Existing");
+        existing.setLastName("User");
+        existing.setPassword("$2a$10$existingHash");
+
+        UsersDTO dtoWithoutPassword = new UsersDTO();
+        dtoWithoutPassword.setId(123L);
+        dtoWithoutPassword.setFirstName("Existing");
+        dtoWithoutPassword.setLastName("User");
+        dtoWithoutPassword.setPassword(null); // no password provided
+
+        Users saved = new Users();
+        saved.setId(123L);
+        saved.setFirstName("Existing");
+        saved.setLastName("User");
+        saved.setPassword("$2a$10$existingHash");
+
+        UsersDTO returnedDto = new UsersDTO();
+        returnedDto.setId(123L);
+        returnedDto.setFirstName("Existing");
+        returnedDto.setLastName("User");
+
+        when(usersRepository.findById(123L)).thenReturn(Optional.of(existing));
+        when(usersRepository.save(any(Users.class))).thenReturn(saved);
+        when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(returnedDto);
+
+        UsersDTO result = usersService.updateUser(dtoWithoutPassword, 123L);
+
+        assertEquals(123L, result.getId());
+        assertEquals("Existing", result.getFirstName());
+        verify(passwordEncoder, never()).encode(any(String.class));
+        verify(usersRepository).save(any(Users.class));
+    }
+
+    @Test
+    void updateUsers_shouldThrow_whenUserNotFound() {
+
+        UsersDTO someDto = new UsersDTO();
+        someDto.setFirstName("Does");
+        someDto.setLastName("NotExist");
+
+        when(usersRepository.findById(12L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> usersService.updateUser(someDto, 12L));
 
         verify(usersRepository).findById(12L);
     }
