@@ -1,6 +1,12 @@
 name: CI/CD Docker Compose
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build-and-unit-test:
@@ -33,3 +39,47 @@ jobs:
 
       - name: Verify Integration Tests
         run: mvn failsafe:verify
+
+      # Only attempt Docker Hub login & push if:
+      # - this is a pull_request targeting main AND the PR branch is in the same repository
+      #   (PRs from forks will not match head.repo.full_name == github.repository so they won't try to push),
+      # OR
+      # - this is a push to main
+      - name: Log in to Docker Hub
+        if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || github.ref == 'refs/heads/main' }}
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || github.ref == 'refs/heads/main' }}
+        uses: docker/setup-buildx-action@v2
+
+      # Build & push for PRs that originate in this repo (tags the image with the PR number)
+      - name: Build and push Docker image for PR
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/meridian:pr-${{ github.event.pull_request.number }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/meridian:pr-${{ github.run_id }}
+
+      # Build & push for pushes to main (tags latest + commit SHA)
+      - name: Build and push Docker image for main
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/meridian:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/meridian:${{ github.sha }}
