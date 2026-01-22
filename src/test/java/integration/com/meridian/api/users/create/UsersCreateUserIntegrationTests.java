@@ -142,4 +142,26 @@ public class UsersCreateUserIntegrationTests extends BaseTest {
         response.then().statusCode(400)
                 .body("error", equalTo("Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character"));
     }
+
+    @Test
+    void createUser_withPasswordMissingLowercase_returns400() {
+
+        String invalidPasswordBody = """
+                {
+                    "firstName": "Testing",
+                    "lastName": "Name",
+                    "username": "%s",
+                    "password": "TESTPASS123!"
+                }
+                """.formatted(RandomStringUtils.randomAlphabetic(8));
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
+                .body(invalidPasswordBody)
+                .post("/users");
+
+        response.then().statusCode(400)
+                .body("error", equalTo("Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character"));
+    }
 }
