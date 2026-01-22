@@ -24,12 +24,17 @@ public class UsersServiceImpl implements UsersService {
 
     public UsersDTO createUser(UsersDTO usersDTO) {
 
-        // Map DTO to entity
-        Users users = modelMapper.map(usersDTO, Users.class);
-        
-        // Hash the password before saving
-        users.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
+        // Extract raw password and prevent it from being mapped into the entity
+        String rawPassword = usersDTO.getPassword();
+        usersDTO.setPassword(null);
 
+        // Map DTO to entity without the plain-text password
+        Users users = modelMapper.map(usersDTO, Users.class);
+
+        // Hash the password before saving, if provided
+        if (rawPassword != null && !rawPassword.isEmpty()) {
+            users.setPassword(passwordEncoder.encode(rawPassword));
+        }
         // Save and return
         Users savedUser = usersRepository.save(users);
         return modelMapper.map(savedUser, UsersDTO.class);
@@ -78,7 +83,7 @@ public class UsersServiceImpl implements UsersService {
                             user.setLastName(usersDTO.getLastName());
                             user.setUsername(usersDTO.getUsername());
                             // Hash the password if it's being updated
-                            if (usersDTO.getPassword() != null && !usersDTO.getPassword().isEmpty()) {
+                            if (usersDTO.getPassword() != null && !usersDTO.getPassword().isBlank()) {
                                 user.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
                             }
                             Users savedUser = usersRepository.save(user);
