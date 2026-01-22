@@ -72,6 +72,32 @@ public class UsersServiceTests {
     }
 
     @Test
+    void createUser_shouldNotEncodePassword_whenPasswordIsNull() {
+
+        Users userWithoutPassword = new Users();
+        userWithoutPassword.setId(124L);
+        userWithoutPassword.setFirstName("NoPassword");
+        userWithoutPassword.setLastName("User");
+        userWithoutPassword.setPassword(null);
+
+        UsersDTO dtoWithoutPassword = new UsersDTO();
+        dtoWithoutPassword.setId(124L);
+        dtoWithoutPassword.setFirstName("NoPassword");
+        dtoWithoutPassword.setLastName("User");
+        dtoWithoutPassword.setPassword(null);
+
+        when(modelMapper.map(any(UsersDTO.class), eq(Users.class))).thenReturn(userWithoutPassword);
+        when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(dtoWithoutPassword);
+        when(usersRepository.save(any(Users.class))).thenReturn(userWithoutPassword);
+
+        UsersDTO result = usersService.createUser(dtoWithoutPassword);
+
+        assertNull(result.getPassword());
+        verify(passwordEncoder, never()).encode(any(String.class));
+        verify(usersRepository).save(any(Users.class));
+    }
+
+    @Test
     void deleteUsersById_shouldDelete_whenIdExists() {
 
         when(usersRepository.existsById(123L)).thenReturn(true);
@@ -158,12 +184,14 @@ public class UsersServiceTests {
         update.setId(123L);
         update.setFirstName("Update");
         update.setLastName("Name");
+        update.setUsername("UpdateUsername");
         update.setPassword("$2a$10$newHashedPassword");
 
         UsersDTO updatedDTO = new UsersDTO();
         updatedDTO.setId(123L);
-        updatedDTO.setFirstName("Update");
+        updatedDTO.setFirstName("Updated");
         updatedDTO.setLastName("Name");
+        updatedDTO.setUsername("UpdatedUsername");
         updatedDTO.setPassword("NewPassword123!");
 
         when(passwordEncoder.encode(any(String.class))).thenReturn("$2a$10$newHashedPassword");
@@ -174,8 +202,9 @@ public class UsersServiceTests {
         UsersDTO result = usersService.updateUser(modelMapper.map(update, UsersDTO.class), 123L);
 
         assertEquals(123L, result.getId());
-        assertEquals("Update", result.getFirstName());
+        assertEquals("Updated", result.getFirstName());
         assertEquals("Name", result.getLastName());
+        assertEquals("UpdatedUsername", result.getUsername());
 
         verify(usersRepository).findById(123L);
         verify(passwordEncoder).encode(any(String.class));
