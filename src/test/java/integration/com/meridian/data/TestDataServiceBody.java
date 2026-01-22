@@ -30,7 +30,8 @@ public enum TestDataServiceBody {
             {
             	"firstName": "Testing",
             	"lastName": "Name",
-            	"username": "%s"
+            	"username": "%s",
+            	"password": "Password123!"
             }
             """);
 

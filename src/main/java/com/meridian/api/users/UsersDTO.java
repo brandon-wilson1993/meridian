@@ -1,11 +1,16 @@
 package com.meridian.api.users;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class UsersDTO {
+
+    public static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
+    public static final String PASSWORD_MESSAGE = "Password must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, and one special character";
 
     private Long id;
 
@@ -17,6 +22,11 @@ public class UsersDTO {
 
     @NotNull(message = "username is required")
     private String username;
+
+    @NotBlank(message = "password is required")
+    @Pattern(regexp = PASSWORD_PATTERN, message = PASSWORD_MESSAGE)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
 
     public String getFirstName() {
         return firstName;
@@ -48,5 +58,13 @@ public class UsersDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

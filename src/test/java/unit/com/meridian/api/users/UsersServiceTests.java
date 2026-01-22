@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +31,9 @@ public class UsersServiceTests {
     @Mock
     private ModelMapper modelMapper;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UsersService usersService = new UsersServiceImpl();
 
@@ -40,16 +44,19 @@ public class UsersServiceTests {
         users.setId(123L);
         users.setFirstName("Testing");
         users.setLastName("Name");
+        users.setPassword("$2a$10$hashedPassword");
 
         usersDTO = new UsersDTO();
         usersDTO.setId(123L);
         usersDTO.setFirstName("Testing");
         usersDTO.setLastName("Name");
+        usersDTO.setPassword("Password123!");
     }
 
     @Test
     void createUsers_shouldCreate_whenusersDTOIsValid() {
 
+        when(passwordEncoder.encode(any(String.class))).thenReturn("$2a$10$hashedPassword");
         when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(usersDTO);
         when(modelMapper.map(any(UsersDTO.class), eq(Users.class))).thenReturn(users);
         when(usersRepository.save(any(Users.class))).thenReturn(users);
@@ -60,7 +67,34 @@ public class UsersServiceTests {
         assertEquals("Testing", result.getFirstName());
         assertEquals("Name", result.getLastName());
 
+        verify(passwordEncoder).encode(any(String.class));
         verify(usersRepository).save(users);
+    }
+
+    @Test
+    void createUser_shouldNotEncodePassword_whenPasswordIsNull() {
+
+        Users userWithoutPassword = new Users();
+        userWithoutPassword.setId(124L);
+        userWithoutPassword.setFirstName("NoPassword");
+        userWithoutPassword.setLastName("User");
+        userWithoutPassword.setPassword(null);
+
+        UsersDTO dtoWithoutPassword = new UsersDTO();
+        dtoWithoutPassword.setId(124L);
+        dtoWithoutPassword.setFirstName("NoPassword");
+        dtoWithoutPassword.setLastName("User");
+        dtoWithoutPassword.setPassword(null);
+
+        when(modelMapper.map(any(UsersDTO.class), eq(Users.class))).thenReturn(userWithoutPassword);
+        when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(dtoWithoutPassword);
+        when(usersRepository.save(any(Users.class))).thenReturn(userWithoutPassword);
+
+        UsersDTO result = usersService.createUser(dtoWithoutPassword);
+
+        assertNull(result.getPassword());
+        verify(passwordEncoder, never()).encode(any(String.class));
+        verify(usersRepository).save(any(Users.class));
     }
 
     @Test
@@ -90,11 +124,13 @@ public class UsersServiceTests {
         users1.setId(456L);
         users1.setFirstName("Testing");
         users1.setLastName("Another");
+        users1.setPassword("$2a$10$hashedPassword1");
 
         Users users2 = new Users();
         users2.setId(789L);
         users2.setFirstName("Test");
         users2.setLastName("Name");
+        users2.setPassword("$2a$10$hashedPassword2");
 
         List<Users> users = Arrays.asList(users1, users2);
 
@@ -148,12 +184,17 @@ public class UsersServiceTests {
         update.setId(123L);
         update.setFirstName("Update");
         update.setLastName("Name");
+        update.setUsername("UpdateUsername");
+        update.setPassword("$2a$10$newHashedPassword");
 
         UsersDTO updatedDTO = new UsersDTO();
         updatedDTO.setId(123L);
-        updatedDTO.setFirstName("Update");
+        updatedDTO.setFirstName("Updated");
         updatedDTO.setLastName("Name");
+        updatedDTO.setUsername("UpdatedUsername");
+        updatedDTO.setPassword("NewPassword123!");
 
+        when(passwordEncoder.encode(any(String.class))).thenReturn("$2a$10$newHashedPassword");
         when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(updatedDTO);
         when(usersRepository.findById(123L)).thenReturn(Optional.of(users));
         when(usersRepository.save(any(Users.class))).thenReturn(update);
@@ -161,17 +202,63 @@ public class UsersServiceTests {
         UsersDTO result = usersService.updateUser(modelMapper.map(update, UsersDTO.class), 123L);
 
         assertEquals(123L, result.getId());
-        assertEquals("Update", result.getFirstName());
+        assertEquals("Updated", result.getFirstName());
         assertEquals("Name", result.getLastName());
+        assertEquals("UpdatedUsername", result.getUsername());
 
         verify(usersRepository).findById(123L);
+        verify(passwordEncoder).encode(any(String.class));
         verify(usersRepository).save(any(Users.class)); // object changes in lamba function in service
     }
 
     @Test
-    void updateUsers_shouldNotUpdate_whenIdIsDoesNotExist() {
+    void updateUsers_shouldNotEncodePassword_whenPasswordNotProvided() {
 
-        assertThrows(ResourceNotFoundException.class, () -> usersService.updateUser(modelMapper.map(users, UsersDTO.class), 12L));
+        Users existing = new Users();
+        existing.setId(123L);
+        existing.setFirstName("Existing");
+        existing.setLastName("User");
+        existing.setPassword("$2a$10$existingHash");
+
+        UsersDTO dtoWithoutPassword = new UsersDTO();
+        dtoWithoutPassword.setId(123L);
+        dtoWithoutPassword.setFirstName("Existing");
+        dtoWithoutPassword.setLastName("User");
+        dtoWithoutPassword.setPassword(null); // no password provided
+
+        Users saved = new Users();
+        saved.setId(123L);
+        saved.setFirstName("Existing");
+        saved.setLastName("User");
+        saved.setPassword("$2a$10$existingHash");
+
+        UsersDTO returnedDto = new UsersDTO();
+        returnedDto.setId(123L);
+        returnedDto.setFirstName("Existing");
+        returnedDto.setLastName("User");
+
+        when(usersRepository.findById(123L)).thenReturn(Optional.of(existing));
+        when(usersRepository.save(any(Users.class))).thenReturn(saved);
+        when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(returnedDto);
+
+        UsersDTO result = usersService.updateUser(dtoWithoutPassword, 123L);
+
+        assertEquals(123L, result.getId());
+        assertEquals("Existing", result.getFirstName());
+        verify(passwordEncoder, never()).encode(any(String.class));
+        verify(usersRepository).save(any(Users.class));
+    }
+
+    @Test
+    void updateUsers_shouldThrow_whenUserNotFound() {
+
+        UsersDTO someDto = new UsersDTO();
+        someDto.setFirstName("Does");
+        someDto.setLastName("NotExist");
+
+        when(usersRepository.findById(12L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> usersService.updateUser(someDto, 12L));
 
         verify(usersRepository).findById(12L);
     }

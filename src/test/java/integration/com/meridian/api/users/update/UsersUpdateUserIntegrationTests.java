@@ -22,7 +22,8 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
                 {
                       "firstName": "Update",
                       "lastName": "Name",
-                      "username": "%s"
+                      "username": "%s",
+                      "password": "TestPass123!"
                 }
                 """.formatted(RandomStringUtils.randomAlphabetic(8));
 
@@ -45,7 +46,8 @@ public class UsersUpdateUserIntegrationTests extends BaseTest {
                 {
                       "firstName": "Updated",
                       "lastName": "Name2",
-                      "username": "%s"
+                      "username": "%s",
+                      "password": "UpdatedPass123!"
                 }
                 """.formatted(username);
 

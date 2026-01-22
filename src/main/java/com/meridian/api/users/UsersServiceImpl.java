@@ -3,6 +3,7 @@ package com.meridian.api.users;
 import com.meridian.api.errors.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +19,25 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public UsersDTO createUser(UsersDTO usersDTO) {
 
-        Users users = usersRepository.save(modelMapper.map(usersDTO, Users.class));
+        // Extract raw password and prevent it from being mapped into the entity
+        String rawPassword = usersDTO.getPassword();
+        usersDTO.setPassword(null);
 
-        return modelMapper.map(users, UsersDTO.class);
+        // Map DTO to entity without the plain-text password
+        Users users = modelMapper.map(usersDTO, Users.class);
+
+        // Hash the password before saving, if provided
+        if (rawPassword != null && !rawPassword.isEmpty()) {
+            users.setPassword(passwordEncoder.encode(rawPassword));
+        }
+        // Save and return
+        Users savedUser = usersRepository.save(users);
+        return modelMapper.map(savedUser, UsersDTO.class);
     }
 
     public void deleteUserById(Long id) {
@@ -67,8 +82,11 @@ public class UsersServiceImpl implements UsersService {
                             user.setFirstName(usersDTO.getFirstName());
                             user.setLastName(usersDTO.getLastName());
                             user.setUsername(usersDTO.getUsername());
+                            // Hash the password if it's being updated
+                            if (usersDTO.getPassword() != null && !usersDTO.getPassword().isBlank()) {
+                                user.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
+                            }
                             Users savedUser = usersRepository.save(user);
-                            System.out.println("Updated User: " + savedUser);
                             return modelMapper.map(savedUser, UsersDTO.class);
                         })
                 .orElseThrow(
