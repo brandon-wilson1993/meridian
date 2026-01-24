@@ -27,7 +27,8 @@ public class AuthServiceImpl implements AuthService {
 
         if (userOptional.isEmpty()) {
             // Perform dummy password check to prevent timing attacks
-            passwordEncoder.matches(password, "$2a$10$dummyHashToPreventTimingAttack1234567890123456789012");
+            // Using a valid BCrypt hash format (60 characters) to ensure consistent timing
+            passwordEncoder.matches(password, "$2a$10$AAAAAAAAAAAAAAAAAAAAAA.AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             return Optional.empty();
         }
 
