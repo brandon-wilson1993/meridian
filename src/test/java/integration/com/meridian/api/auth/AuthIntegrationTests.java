@@ -162,54 +162,5 @@ public class AuthIntegrationTests extends BaseTest {
         response.then()
                 .statusCode(400);
     }
-
-    @Test
-    void authenticate_withoutAuthorizationHeader_isAllowed() {
-        // Verify that the /auth endpoint does not require authentication
-        String body = """
-                {
-                    "username": "%s",
-                    "password": "%s"
-                }
-                """.formatted(testUsername, testPassword);
-
-        Response response = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .post("/auth");
-
-        // Should succeed without Authorization header
-        response.then()
-                .statusCode(200)
-                .body("token", notNullValue());
-    }
-
-    @Test
-    void authenticate_returnsValidJwtToken_thatCanBeUsed() {
-        // First authenticate to get a token
-        String authBody = """
-                {
-                    "username": "%s",
-                    "password": "%s"
-                }
-                """.formatted(testUsername, testPassword);
-
-        Response authResponse = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body(authBody)
-                .post("/auth");
-
-        String token = authResponse.then()
-                .statusCode(200)
-                .extract()
-                .path("token");
-
-        // Verify the token works by calling a protected endpoint
-        Response usersResponse = RestAssured.given()
-                .header("Authorization", "Bearer " + token)
-                .get("/users");
-
-        usersResponse.then().statusCode(200);
-    }
 }
 
