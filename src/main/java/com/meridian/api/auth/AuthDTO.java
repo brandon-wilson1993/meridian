@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class AuthRequest {
+public class AuthDTO {
 
     @NotBlank(message = "username is required")
     private String username;

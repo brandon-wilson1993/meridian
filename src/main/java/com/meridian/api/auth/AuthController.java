@@ -18,10 +18,10 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/auth")
-    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthRequest authRequest) {
+    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthDTO authDTO) {
         Optional<String> tokenOptional = authService.authenticate(
-                authRequest.getUsername(),
-                authRequest.getPassword()
+                authDTO.getUsername(),
+                authDTO.getPassword()
         );
 
         if (tokenOptional.isEmpty()) {
