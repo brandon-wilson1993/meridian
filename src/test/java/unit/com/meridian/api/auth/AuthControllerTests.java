@@ -28,7 +28,6 @@ public class AuthControllerTests {
 
     @Test
     void authenticate_shouldReturnToken_whenCredentialsAreValid() {
-        // Arrange
         AuthDTO authDTO = new AuthDTO();
         authDTO.setUsername("testuser");
         authDTO.setPassword("TestPass123!");
@@ -37,10 +36,8 @@ public class AuthControllerTests {
         when(authService.authenticate("testuser", "TestPass123!"))
                 .thenReturn(Optional.of(expectedToken));
 
-        // Act
         ResponseEntity<?> result = authController.authenticate(authDTO);
 
-        // Assert
         assertEquals(200, result.getStatusCode().value());
         assertNotNull(result.getBody());
         assertTrue(result.getBody() instanceof AuthResponse);
@@ -51,7 +48,6 @@ public class AuthControllerTests {
 
     @Test
     void authenticate_shouldReturn401_whenCredentialsAreInvalid() {
-        // Arrange
         AuthDTO authDTO = new AuthDTO();
         authDTO.setUsername("testuser");
         authDTO.setPassword("WrongPassword123!");
@@ -59,10 +55,8 @@ public class AuthControllerTests {
         when(authService.authenticate("testuser", "WrongPassword123!"))
                 .thenReturn(Optional.empty());
 
-        // Act
         ResponseEntity<?> result = authController.authenticate(authDTO);
 
-        // Assert
         assertEquals(401, result.getStatusCode().value());
         assertNotNull(result.getBody());
         assertTrue(result.getBody() instanceof ErrorResponse);
@@ -75,7 +69,6 @@ public class AuthControllerTests {
 
     @Test
     void authenticate_shouldReturn401_whenUsernameDoesNotExist() {
-        // Arrange
         AuthDTO authDTO = new AuthDTO();
         authDTO.setUsername("nonexistentuser");
         authDTO.setPassword("TestPass123!");
@@ -83,10 +76,8 @@ public class AuthControllerTests {
         when(authService.authenticate("nonexistentuser", "TestPass123!"))
                 .thenReturn(Optional.empty());
 
-        // Act
         ResponseEntity<?> result = authController.authenticate(authDTO);
 
-        // Assert
         assertEquals(401, result.getStatusCode().value());
         assertNotNull(result.getBody());
         assertTrue(result.getBody() instanceof ErrorResponse);
@@ -97,7 +88,6 @@ public class AuthControllerTests {
 
     @Test
     void authenticate_shouldCallAuthService_withCorrectParameters() {
-        // Arrange
         AuthDTO authDTO = new AuthDTO();
         authDTO.setUsername("user123");
         authDTO.setPassword("Pass456!");
@@ -105,16 +95,13 @@ public class AuthControllerTests {
         when(authService.authenticate("user123", "Pass456!"))
                 .thenReturn(Optional.of("token123"));
 
-        // Act
         authController.authenticate(authDTO);
 
-        // Assert
         verify(authService, times(1)).authenticate("user123", "Pass456!");
     }
 
     @Test
     void authenticate_shouldReturnErrorResponse_withGenericMessage() {
-        // Arrange - test that error message doesn't leak username existence info
         AuthDTO authDTO = new AuthDTO();
         authDTO.setUsername("anyuser");
         authDTO.setPassword("anypass");
@@ -122,10 +109,8 @@ public class AuthControllerTests {
         when(authService.authenticate(anyString(), anyString()))
                 .thenReturn(Optional.empty());
 
-        // Act
         ResponseEntity<?> result = authController.authenticate(authDTO);
 
-        // Assert
         ErrorResponse errorResponse = (ErrorResponse) result.getBody();
         assertEquals("Invalid username or password", errorResponse.getMessage());
         // Verify the message is generic and doesn't reveal specific details
