@@ -26,6 +26,8 @@ public class AuthServiceImpl implements AuthService {
         Optional<Users> userOptional = usersRepository.findByUsername(username);
 
         if (userOptional.isEmpty()) {
+            // Perform dummy password check to prevent timing attacks
+            passwordEncoder.matches(password, "$2a$10$dummyHashToPreventTimingAttack1234567890123456789012");
             return Optional.empty();
         }
 

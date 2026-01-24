@@ -1,5 +1,6 @@
 package com.meridian.api.auth;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ public class AuthRequest {
     private String username;
 
     @NotBlank(message = "password is required")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     public String getUsername() {

@@ -33,7 +33,7 @@ public class AuthServiceTests {
     private JwtTokenProvider jwtTokenProvider;
 
     @InjectMocks
-    private AuthService authService = new AuthServiceImpl();
+    private AuthServiceImpl authService;
 
     @BeforeAll
     static void beforeAll() {
@@ -75,7 +75,8 @@ public class AuthServiceTests {
 
         assertFalse(result.isPresent());
         verify(usersRepository).findByUsername(username);
-        verify(passwordEncoder, never()).matches(any(), any());
+        // Verify dummy password check is performed to prevent timing attacks
+        verify(passwordEncoder).matches(eq(password), anyString());
         verify(jwtTokenProvider, never()).generateToken(any());
     }
 
@@ -122,7 +123,8 @@ public class AuthServiceTests {
 
         assertFalse(result.isPresent());
         verify(usersRepository).findByUsername(username);
-        verify(passwordEncoder, never()).matches(any(), any());
+        // Verify dummy password check is performed to prevent timing attacks
+        verify(passwordEncoder).matches(eq(password), anyString());
         verify(jwtTokenProvider, never()).generateToken(any());
     }
 }
