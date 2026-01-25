@@ -72,6 +72,7 @@ public class UsersServiceImpl implements UsersService {
         return usersDTO;
     }
 
+    @Override
     public UsersDTO getUserByUsername(String username) {
 
         Optional<Users> user = usersRepository.findByUsername(username);
