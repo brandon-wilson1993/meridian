@@ -12,5 +12,7 @@ public interface UsersService {
 
     UsersDTO getUserById(Long id);
 
+    UsersDTO getUserByUsername(String username);
+
     UsersDTO updateUser(UsersDTO updatedAuthor, Long id);
 }

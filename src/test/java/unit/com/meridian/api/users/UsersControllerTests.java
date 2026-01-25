@@ -10,6 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collections;
 import java.util.List;
@@ -162,5 +166,37 @@ public class UsersControllerTests {
 
         assertThrows(ResourceNotFoundException.class, 
                 () -> usersController.updateUser(updatedUser, 999L));
+    }
+
+    @Test
+    void userController_getCurrentUser_shouldReturnCurrentUser() {
+
+        UsersDTO currentUser = new UsersDTO();
+        currentUser.setId(100L);
+        currentUser.setFirstName("Current");
+        currentUser.setLastName("User");
+        currentUser.setUsername("currentuser");
+
+        // Mock SecurityContext
+        Authentication authentication = new UsernamePasswordAuthenticationToken("currentuser", null, Collections.emptyList());
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(usersService.getUserByUsername("currentuser")).thenReturn(currentUser);
+
+        ResponseEntity<UsersDTO> result = usersController.getCurrentUser();
+
+        assertNotNull(result);
+        assertEquals(200, result.getStatusCode().value());
+        assertEquals(100L, result.getBody().getId());
+        assertEquals("Current", result.getBody().getFirstName());
+        assertEquals("User", result.getBody().getLastName());
+        assertEquals("currentuser", result.getBody().getUsername());
+
+        verify(usersService).getUserByUsername("currentuser");
+
+        // Clean up SecurityContext
+        SecurityContextHolder.clearContext();
     }
 }
