@@ -178,6 +178,29 @@ public class UsersServiceTests {
     }
 
     @Test
+    void getUserByUsername_shouldReturn_whenUsernameExists() {
+
+        users.setUsername("testuser");
+        when(modelMapper.map(any(Users.class), eq(UsersDTO.class))).thenReturn(usersDTO);
+        when(usersRepository.findByUsername("testuser")).thenReturn(Optional.of(users));
+
+        UsersDTO result = usersService.getUserByUsername("testuser");
+
+        assertEquals(123L, result.getId());
+        assertEquals("Testing", result.getFirstName());
+        verify(usersRepository).findByUsername("testuser");
+    }
+
+    @Test
+    void getUserByUsername_shouldThrow_whenUsernameDoesNotExist() {
+
+        when(usersRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> usersService.getUserByUsername("nonexistent"));
+        verify(usersRepository).findByUsername("nonexistent");
+    }
+
+    @Test
     void updateUsers_shouldUpdate_whenUsersDTOIsValid() {
 
         Users update = new Users();

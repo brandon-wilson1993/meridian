@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,6 +49,18 @@ public class UsersController {
     public ResponseEntity<UsersDTO> getUserById(@PathVariable("id") Long id) {
 
         UsersDTO user = usersService.getUserById(id);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/users/me")
+    public ResponseEntity<UsersDTO> getCurrentUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        UsersDTO user = usersService.getUserByUsername(username);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }

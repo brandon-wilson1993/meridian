@@ -72,6 +72,17 @@ public class UsersServiceImpl implements UsersService {
         return usersDTO;
     }
 
+    public UsersDTO getUserByUsername(String username) {
+
+        Optional<Users> user = usersRepository.findByUsername(username);
+
+        if (user.isEmpty()) {
+            throw new ResourceNotFoundException("User with username " + username + " not found");
+        }
+
+        return modelMapper.map(user.get(), UsersDTO.class);
+    }
+
     public UsersDTO updateUser(UsersDTO usersDTO, Long id) {
 
         Optional<Users> users = usersRepository.findById(id);
