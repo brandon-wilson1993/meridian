@@ -4,24 +4,35 @@ import integration.com.meridian.base.BaseTest;
 import integration.com.meridian.helper.jwt.JwtTestHelper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.equalTo;
 
 public class UsersGetMeIntegrationTests extends BaseTest {
 
+    private static String testUsername;
+
+    @BeforeAll
+    static void setupTestUser() {
+        // Create a test user with known credentials
+        testUsername = "getmetest" + RandomStringUtils.randomAlphabetic(8);
+        testDataService.basicDataCreation(testUsername);
+    }
+
     @Test
     void getMe_returnsCurrentUserData_whenValidTokenProvided() {
 
         // Generate a token for a specific user
-        String userToken = JwtTestHelper.generateTestToken("testuser");
+        String userToken = JwtTestHelper.generateTestToken(testUsername);
 
         Response response = RestAssured.given()
                 .header("Authorization", "Bearer " + userToken)
                 .get("/users/me");
 
         response.then().statusCode(200)
-                .body("username", equalTo("testuser"));
+                .body("username", equalTo(testUsername));
     }
 
     @Test
