@@ -68,9 +68,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/meridian:pr-${{ github.event.pull_request.number }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/meridian:pr-${{ github.run_id }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/meridian:pr-${{ github.event.pull_request.number }}
 
       # Build & push for pushes to main (tags latest + commit SHA)
       - name: Build and push Docker image for main
@@ -80,6 +78,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/meridian:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/meridian:${{ github.sha }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/meridian:latest
