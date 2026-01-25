@@ -16,7 +16,7 @@ public class UsersGetMeIntegrationTests extends BaseTest {
 
     @BeforeAll
     static void setupTestUser() {
-        // Create a test user with known credentials
+        // Create a test user for integration testing
         testUsername = "getmetest" + RandomStringUtils.randomAlphabetic(8);
         testDataService.basicDataCreation(testUsername);
     }
